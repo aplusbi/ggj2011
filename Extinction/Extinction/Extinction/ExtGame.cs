@@ -19,6 +19,8 @@ namespace Extinction
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         int width, height;
+        int cwidth, cheight;
+        int offx, offy;
         static int currID = 1;
         public int[,] grid;
         Dictionary<int, Cell> cells;
@@ -43,6 +45,10 @@ namespace Extinction
             cells = new Dictionary<int, Cell>();
             width = 64;
             height = 64;
+            cwidth = 10;
+            cheight = 10;
+            offx = 180;
+            offy = 30;
             grid = new int[width, height];
             for (int h = 0; h < height; ++h)
             {
@@ -122,12 +128,14 @@ namespace Extinction
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(background, new Vector2(180, 30), Color.White);
-            for (int y = 0; y < height; ++y)
+            spriteBatch.Draw(background, new Vector2(offx, offy), Color.White);
+            for (int h = 0; h < height; ++h)
             {
-                for (int x = 0; x < width; ++x)
+                for (int w = 0; w < width; ++w)
                 {
-                    cells[grid[x, y]].Draw(spriteBatch, x, y);
+                    int x = offx + w * cwidth;
+                    int y = offy + h * cheight;
+                    cells[grid[w, h]].Draw(spriteBatch, x, y);
                 }
             }
 
