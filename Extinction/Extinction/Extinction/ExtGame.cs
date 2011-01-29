@@ -23,6 +23,7 @@ namespace Extinction
         public int[,] grid;
         Dictionary<int, Cell> cells;
         Texture2D background;
+        public static Texture2D empty_tile;
 
         public ExtGame()
         {
@@ -70,6 +71,7 @@ namespace Extinction
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             background = Content.Load<Texture2D>("background");
+            empty_tile = Content.Load<Texture2D>("brown_tile");
             // TODO: use this.Content to load your game content here
         }
 
@@ -125,7 +127,7 @@ namespace Extinction
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    cells[grid[x, y]].Draw(x, y);
+                    cells[grid[x, y]].Draw(spriteBatch, x, y);
                 }
             }
 

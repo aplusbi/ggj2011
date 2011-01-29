@@ -17,14 +17,16 @@ namespace Extinction
         int[,] grid;
         int id = -1;
         public bool updated;
+        public bool drawn;
         public Cell(int i, int[,] g)
         {
             id = i;
             grid = g;
             updated = false;
+            drawn = false;
         }
 
         public abstract void Update(GameTime gameTime, int x, int y);
-        public abstract void Draw(int x, int y);
+        public abstract void Draw(SpriteBatch S, int x, int y);
     }
 }

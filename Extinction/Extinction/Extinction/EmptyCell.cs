@@ -12,12 +12,16 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Extinction
 {
-    public class EmptyCell: Cell
+    public class EmptyCell : Cell
     {
-        public EmptyCell(int i, int[,] g): base(i, g)
+        public EmptyCell(int i, int[,] g)
+            : base(i, g)
         {
         }
         public override void Update(GameTime gameTime, int x, int y) { }
-        public override void Draw(int x, int y) {}
+        public override void Draw(SpriteBatch S, int x, int y) 
+        {
+            S.Draw(ExtGame.empty_tile, new Vector2(x, y), Color.White);
+        }
     }
 }
