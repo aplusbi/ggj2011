@@ -164,10 +164,10 @@ namespace Extinction
 
                     Cell c = ExtGame.cells[ExtGame.grid[sx, sy]];
 
-                    // if food, we are done
+                    // if pred, we are done
                     if (pred(c))
                     {
-                        // if we are at the root FEAST
+                        // if we are at the root
                         if (v[0] == x && v[1] == y)
                         {
                             handler(sx, sy);
