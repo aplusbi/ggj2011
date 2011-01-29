@@ -22,6 +22,7 @@ namespace Extinction
         static int currID = 1;
         public int[,] grid;
         Dictionary<int, Cell> cells;
+        Texture2D background;
 
         public ExtGame()
         {
@@ -51,6 +52,10 @@ namespace Extinction
             }
 
             base.Initialize();
+            IsMouseVisible = true;
+            graphics.PreferredBackBufferHeight = 700;
+            graphics.PreferredBackBufferWidth = 1000;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -62,6 +67,7 @@ namespace Extinction
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            background = Content.Load<Texture2D>("background");
             // TODO: use this.Content to load your game content here
         }
 
@@ -99,6 +105,10 @@ namespace Extinction
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(background, new Vector2(180, 30), Color.White);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
