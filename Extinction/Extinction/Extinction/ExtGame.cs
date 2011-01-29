@@ -294,26 +294,23 @@ namespace Extinction
                         new_cell_type != null)
                     {
                         int cellx = cursorx / cwidth, celly = cursory / cheight;
-                        Cell C = System.Activator.CreateInstance(new_cell_type) as Cell;
+                        //Cell C = System.Activator.CreateInstance(new_cell_type) as Cell;
                         if (cells[grid[cellx, celly]] is EmptyCell)
                         {
-                            if (C is HerbivoreCell)
+                            if (new_cell_type == typeof(HerbivoreCell))
                             {
-                                HerbivoreCell A = C as HerbivoreCell;
-                                A.info = animalinfos[0];
-                                AddCell(cellx, celly, C);
+                                HerbivoreCell A = new HerbivoreCell(animalinfos[0]);              
+                                AddCell(cellx, celly, A);
                             }
-                            else if (C is CarnivoreCell)
+                            else if (new_cell_type == typeof(CarnivoreCell))
                             {
-                                CarnivoreCell A = C as CarnivoreCell;
-                                A.info = animalinfos[1];
-                                AddCell(cellx, celly, C);
+                                CarnivoreCell A = new CarnivoreCell(animalinfos[1]);
+                                AddCell(cellx, celly, A);
                             }
                             else
                             {
-                                PlantCell A = C as PlantCell;
-                                A.info = plantinfos[0];
-                                AddCell(cellx, celly, C);
+                                PlantCell A = new PlantCell(plantinfos[0]);
+                                AddCell(cellx, celly, A);
                             }
                         }
                     }
