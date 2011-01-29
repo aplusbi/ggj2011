@@ -178,13 +178,13 @@ namespace Extinction
             }
             cells.Add(0, new EmptyCell());
             AddCell(30, 30, new PlantCell());
-            AddCell(6, 6, new PlantCell());
-            AddCell(5, 5, new HerbivoreCell());
+            //AddCell(6, 6, new PlantCell());
+            //AddCell(5, 5, new HerbivoreCell());
             AddCell(20, 20, new HerbivoreCell());
-            AddCell(25, 20, new HerbivoreCell());
-            AddCell(30, 20, new HerbivoreCell());
-            AddCell(35, 20, new HerbivoreCell());
-            AddCell(33, 20, new HerbivoreCell());
+            //AddCell(25, 20, new HerbivoreCell());
+            //AddCell(30, 20, new HerbivoreCell());
+            //AddCell(35, 20, new HerbivoreCell());
+            //AddCell(33, 20, new HerbivoreCell());
 
             turn_amount = 1000;
         }

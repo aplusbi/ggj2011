@@ -60,6 +60,10 @@ namespace Extinction
 
         public virtual void Update(GameTime gameTime, int x, int y)
         {
+            if (updated)
+                return;
+            updated = true;
+
             // check everything around it
             int[,] spots = new int[8,2];
             int index = Spots(x, y, spots);

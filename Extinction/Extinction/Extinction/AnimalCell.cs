@@ -30,10 +30,10 @@ namespace Extinction
         public AnimalCell()
             : base()
         {
-            info.sated = 200;
+            info.sated = 100;
             info.starved = 75;
             info.airRate = -5;
-            info.lifeExectancy = 100;
+            info.lifeExectancy = 1000000;
             info.food = 20;
 
             hunger = info.sated;
@@ -77,8 +77,10 @@ namespace Extinction
                 }
             }
 
-            if(!SeekFood(x, y))
-                base.Update(gameTime, x, y);
+            if (SeekFood(x, y))
+                updated = true;
+
+            base.Update(gameTime, x, y);
         }
 
         public override void Draw(SpriteBatch S, int x, int y)
@@ -119,26 +121,34 @@ namespace Extinction
             ExtGame.grid[i, j] = ExtGame.grid[x, y];
             ExtGame.grid[x, y] = 0;
         }
+
+        struct Pair
+        {
+        }
+        Queue<int[]> vertices = new Queue<int[]>();
+        IDictionary<int, int[]> lookup = new Dictionary<int, int[]>();
         public bool SeekFood(int x, int y)
         {
             if (hunger > info.starved)
                 return false;
 
-            Queue<int[]> vertices = new Queue<int[]>();
-            IDictionary<int[], int[]> lookup = new Dictionary<int[], int[]>();
+            vertices.Clear();
+            lookup.Clear();
+
             // vertex plus parent vertex
             vertices.Enqueue(new int[4]{x, y, x, y});
-            lookup.Add(new int[2] { x, y }, new int[4]{ x, y, x, y} );
+            lookup.Add( x + y * ExtGame.width, new int[4] { x, y, x, y });
+            int[,] spots = new int[8, 2];
 
             while (vertices.Count > 0)
             {
                 int[] v = vertices.Dequeue();
-                int[,] spots = new int[8, 2];
                 int len = Spots(v[0], v[1], spots);
                 for (int i = 0; i < len; ++i)
                 {
                     int sx = spots[i, 0];
                     int sy = spots[i, 1];
+
                     Cell c = ExtGame.cells[ExtGame.grid[sx, sy]];
 
                     // if food, we are done
@@ -146,10 +156,10 @@ namespace Extinction
                     {
                         int[] p = v;
                         // traverse backwards
-                        while (p[0] != x && p[1] != y)
+                        while (p[2] != x && p[3] != y)
                         {
                             // get the parent
-                            p = lookup[new int[2] { p[2], p[3] }];
+                            p = lookup[p[2] + p[3] * ExtGame.width];
                         }
 
                         if (!Eat(ExtGame.cells[ExtGame.grid[p[0], p[1]]], p[0], p[1]))
@@ -158,10 +168,11 @@ namespace Extinction
                     }
 
                     // don't add visited nodes
-                    if (lookup[new int[2]{sx, sy}] != new int[4] && c is EmptyCell)
+                    int s = sx + sy * ExtGame.width;
+                    if (!lookup.ContainsKey(s) && c is EmptyCell) 
                     {
                         vertices.Enqueue(new int[4] { sx, sy, v[0], v[1] });
-                        lookup.Add(new int[2] { sx, sy }, new int[4] { sx, sy, v[0], v[1] });
+                        lookup.Add(s, new int[4] { sx, sy, v[0], v[1] });
                     }
                 }
             }
@@ -179,5 +190,6 @@ namespace Extinction
         }
         public abstract void Reproduce(int i, int j);
         public abstract bool IsFood(Cell c);
+        //public abstract bool IsMate(Cell c);
     }
 }
