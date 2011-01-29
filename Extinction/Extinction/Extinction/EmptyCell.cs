@@ -12,18 +12,12 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Extinction
 {
-    public abstract class Cell
+    public class EmptyCell: Cell
     {
-        int[,] grid;
-        int id = -1;
-        bool updated { set; get; }
-        public Cell(int i, int[,] g)
+        public EmptyCell(int i, int[,] g): base(i, g)
         {
-            id = i;
-            grid = g;
         }
-
-        public abstract void Update(GameTime gameTime, int x, int y);
-        public abstract void Draw(int x, int y);
+        public override void Update(GameTime gameTime, int x, int y) { }
+        public override void Draw(int x, int y) {}
     }
 }

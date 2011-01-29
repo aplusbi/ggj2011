@@ -51,6 +51,8 @@ namespace Extinction
                 }
             }
 
+            cells.Add(0, new EmptyCell(0, grid));
+
             base.Initialize();
             IsMouseVisible = true;
             graphics.PreferredBackBufferHeight = 700;
@@ -92,6 +94,13 @@ namespace Extinction
                 this.Exit();
 
             // TODO: Add your update logic here
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    cells[grid[x, y]].Update(gameTime, x, y);
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -107,6 +116,13 @@ namespace Extinction
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             spriteBatch.Draw(background, new Vector2(180, 30), Color.White);
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    cells[grid[x, y]].Draw(x, y);
+                }
+            }
 
             spriteBatch.End();
 
