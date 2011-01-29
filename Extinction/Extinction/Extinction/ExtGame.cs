@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -21,6 +22,7 @@ namespace Extinction
         public static int width, height;
         public static int cwidth, cheight;
         int offx, offy;
+        int cursorx, cursory;
         static int currID = 1;
         public static int[,] grid;
         public static Dictionary<int, Cell> cells;
@@ -28,13 +30,21 @@ namespace Extinction
         Texture2D background;
         TimeSpan elapsed;
         public static Texture2D empty_tile;
+        public Texture2D cursor_tex;
         public static Texture2D green_tile;
         public static Texture2D red_tile;
+        Texture2D plants_overlay;
+        Texture2D button_up;
+        Texture2D button_down;
+        
+        public MouseState mouse_state;
+        List<Button> buttons;
 
         public ExtGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            buttons = new List<Button>();
         }
 
         /// <summary>
@@ -47,11 +57,11 @@ namespace Extinction
         {
             // TODO: Add your initialization logic here
             cells = new Dictionary<int, Cell>();
-            width = 64;
-            height = 64;
-            cwidth = 10;
-            cheight = 10;
-            offx = 180;
+            width = 40;
+            height = 40;
+            cwidth = 16;
+            cheight = 16;
+            offx = 300;
             offy = 30;
             oxygen = 2000;
             maxOxygen = 4000;
@@ -65,14 +75,14 @@ namespace Extinction
             }
 
             cells.Add(0, new EmptyCell());
-            AddCell(30, 40, new PlantCell());
+            AddCell(30, 30, new PlantCell());
             AddCell(6, 6, new PlantCell());
             AddCell(5, 5, new HerbivoreCell());
             AddCell(20, 20, new HerbivoreCell());
             AddCell(25, 20, new HerbivoreCell());
             AddCell(30, 20, new HerbivoreCell());
             AddCell(35, 20, new HerbivoreCell());
-            AddCell(40, 20, new HerbivoreCell());
+            AddCell(33, 20, new HerbivoreCell());
 
             base.Initialize();
             IsMouseVisible = true;
@@ -94,7 +104,16 @@ namespace Extinction
             empty_tile = Content.Load<Texture2D>("brown_tile");
             green_tile = Content.Load<Texture2D>("green_tile");
             red_tile = Content.Load<Texture2D>("red_tile");
+            cursor_tex = Content.Load<Texture2D>("cursor");
+            plants_overlay = Content.Load<Texture2D>("plants");
+            button_up = Content.Load<Texture2D>("button_up");
+            button_down = Content.Load<Texture2D>("button_down");
             // TODO: use this.Content to load your game content here
+
+            Button B = new Button(button_up, button_down, plants_overlay, 0, 0);
+            buttons.Add(B);
+
+            LoadWorldInfo();
         }
 
         /// <summary>
@@ -104,6 +123,20 @@ namespace Extinction
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+        }
+
+        public void LoadWorldInfo()
+        {
+            string line = "";
+            using (StreamReader reader =
+                new StreamReader(Content.RootDirectory + "\\world_info.txt"))
+            {
+                while ((line = reader.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+            //Content.RootDirectory
         }
 
         /// <summary>
@@ -136,6 +169,27 @@ namespace Extinction
                 }
             }
 
+            //update the position of the cursor based on the mouse position
+            mouse_state = Mouse.GetState();
+            int mousex = mouse_state.X;
+            int mousey = mouse_state.Y;
+
+            mousex -= offx;
+            mousey -= offy;
+
+            cursorx = mousex - (mousex % cwidth);
+            cursory = mousey - (mousey % cheight);
+
+            if (cursorx > (width - 1) * cwidth) cursorx = (width - 1) * cwidth;
+            if (cursory > (height - 1) * cheight) cursory = (height - 1) * cheight;
+            if (cursorx < 0) cursorx = 0;
+            if (cursory < 0) cursory = 0;
+
+            foreach (Button B in buttons)
+            {
+                B.Update(mouse_state);
+            }
+
             base.Update(gameTime);
         }
 
@@ -162,6 +216,14 @@ namespace Extinction
             foreach (Cell c in cells.Values)
             {
                 c.drawn = false;
+            }
+            //draw the cursor
+            spriteBatch.Draw(cursor_tex, 
+                new Vector2(cursorx + offx, cursory + offy), Color.White);
+
+            foreach (Button B in buttons)
+            {
+                B.Draw(spriteBatch);
             }
 
             spriteBatch.End();
