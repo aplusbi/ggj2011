@@ -107,7 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimalCell.cs" />
     <Compile Include="Button.cs" />
+    <Compile Include="CarnivoreCell.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="HerbivoreCell.cs" />
     <Compile Include="PlantCell.cs" />
