@@ -33,6 +33,8 @@ namespace Extinction
         public Texture2D cursor_tex;
         public static Texture2D green_tile;
         public static Texture2D red_tile;
+        Texture2D airbar, bar_seperator;
+        int barsize = 568, bar_offset = 40;
         Texture2D plants_overlay, herb_overlay, carn_overlay;
         Texture2D button_up;
         Texture2D button_down;
@@ -64,7 +66,7 @@ namespace Extinction
             cwidth = 16;
             cheight = 16;
             offx = 300;
-            offy = 30;
+            offy = 5;
             oxygen = 2000;
             maxOxygen = 4000;
             grid = new int[width, height];
@@ -112,18 +114,20 @@ namespace Extinction
             herb_overlay = Content.Load<Texture2D>("herbivore");
             button_up = Content.Load<Texture2D>("button_up");
             button_down = Content.Load<Texture2D>("button_down");
+            airbar = Content.Load<Texture2D>("airbar");
+            bar_seperator = Content.Load<Texture2D>("bar_seperator");
             // TODO: use this.Content to load your game content here
 
             Button B = new Button("Plants", button_up, button_down, 
-                plants_overlay, 0, 0);
+                plants_overlay, 130, 10);
             B.Pressed += new Button.ButtonPressedHandler(Plants_Pressed);
             buttons.Add(B);
             B = new Button("Herbivore", button_up, button_down, 
-                herb_overlay, 0, Button.bheight);
+                herb_overlay, 130, 10+ Button.bheight);
             B.Pressed += new Button.ButtonPressedHandler(Herbivore_Pressed);
             buttons.Add(B);
             B = new Button("Carnivore", button_up, button_down,  
-                carn_overlay, 0, Button.bheight*2);
+                carn_overlay, 130, 10+(Button.bheight)*2);
             B.Pressed += new Button.ButtonPressedHandler(Carnivore_Pressed);
             buttons.Add(B);
 
@@ -224,7 +228,8 @@ namespace Extinction
             if(mousex >= 0 && mousex <= (width - 1) * cwidth)
                 if (mousey >= 0 && mousey <= (height - 1) * cheight)
                 {
-                    if (mouse_state.LeftButton == ButtonState.Pressed)
+                    if (mouse_state.LeftButton == ButtonState.Pressed &&
+                        new_cell_type != null)
                     {
                         int cellx = cursorx / cwidth, celly = cursory / cheight;
                         Cell C = System.Activator.CreateInstance(new_cell_type) as Cell;
@@ -275,6 +280,12 @@ namespace Extinction
             {
                 B.Draw(spriteBatch);
             }
+            spriteBatch.Draw(airbar, 
+                new Vector2(offx, offy + height * cheight), Color.White);
+            float oxplus = ((float)oxygen / (float)maxOxygen) * barsize;
+            spriteBatch.Draw(bar_seperator, 
+                new Vector2(offx + oxplus + bar_offset, offy + height * cheight),
+                Color.White);
 
             spriteBatch.End();
 
