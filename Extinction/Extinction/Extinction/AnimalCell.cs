@@ -16,14 +16,15 @@ namespace Extinction
     {
         public struct Info
         {
-            public int width, height;
-            public int reproRate;
-            public int airRate;
-            public int food;
-            public int sated; // hunger level at which they are full
-            public int starved; // hunger level at which they seek food
-            public int lifeExectancy; // max age
-            public int airCutoff;
+            public int width { get; set; }
+            public int height { get; set; }
+            public int reproRate { get; set; }
+            public int airRate { get; set; }
+            public int food { get; set; }
+            public int sated { get; set; } // hunger level at which they are full
+            public int starved { get; set; } // hunger level at which they seek food
+            public int lifeExpectancy { get; set; } // max age
+            public int airCutoff { get; set; }
         }
         public Info info;
         protected int hunger;
@@ -60,9 +61,9 @@ namespace Extinction
                     return;
                 }
             }
-            if (++age > info.lifeExectancy)
+            if (++age > info.lifeExpectancy)
             {
-                int max = Math.Max(0, info.lifeExectancy / 4 - (age - info.lifeExectancy));
+                int max = Math.Max(0, info.lifeExpectancy / 4 - (age - info.lifeExpectancy));
                 if (r.Next(max) == 0)
                 {
                     ExtGame.RemoveCell(x, y);

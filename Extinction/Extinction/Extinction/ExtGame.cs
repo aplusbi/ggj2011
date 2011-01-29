@@ -42,8 +42,9 @@ namespace Extinction
         Texture2D button_down;
         Type new_cell_type;
         long turn_amount;
-        List<PlantCell.Info> plantinfos = new List<PlantCell.Info>();
-        List<AnimalCell.Info> animalinfos = new List<AnimalCell.Info>();
+        List<PlantCell.Info> plantinfos;
+        List<AnimalCell.Info> herbivoreinfos;
+        List<AnimalCell.Info> carnivoreinfos;
         
         public MouseState mouse_state;
         List<Button> buttons;
@@ -201,35 +202,20 @@ namespace Extinction
             using (StreamReader reader =
                 new StreamReader(Content.RootDirectory + "\\world_info.txt"))
             {
+                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
                 while ((line = reader.ReadLine()) != null)
                 {
-                    string[] paramstrings = line.Split(new char[] { '(', ',', ')' });
-
                     if (line.StartsWith("Plants"))
                     {
-                        PlantCell.Info pinfo = new PlantCell.Info();
-                        pinfo.width = int.Parse(paramstrings[1]);
-                        pinfo.height = int.Parse(paramstrings[2]);
-                        pinfo.reproRate = int.Parse(paramstrings[3]);
-                        pinfo.airRate = int.Parse(paramstrings[4]);
-                        pinfo.food = int.Parse(paramstrings[5]);
-                        pinfo.airCutoff = int.Parse(paramstrings[6]);
-                        plantinfos.Add(pinfo);
-
+                        plantinfos = serializer.Deserialize<List<PlantCell.Info>>(line.Substring(6));
                     }
-                    if (line.StartsWith("Herbivores") || line.StartsWith("Carnivores"))
+                    else if (line.StartsWith("Herbivores"))
                     {
-                        AnimalCell.Info pinfo = new AnimalCell.Info();
-                        pinfo.width = int.Parse(paramstrings[1]);
-                        pinfo.height = int.Parse(paramstrings[2]);
-                        pinfo.reproRate = int.Parse(paramstrings[3]);
-                        pinfo.airRate = int.Parse(paramstrings[4]);
-                        pinfo.food = int.Parse(paramstrings[5]);
-                        pinfo.sated = int.Parse(paramstrings[6]);
-                        pinfo.starved = int.Parse(paramstrings[7]);
-                        pinfo.lifeExectancy = int.Parse(paramstrings[8]);
-                        pinfo.airCutoff = int.Parse(paramstrings[9]);
-                        animalinfos.Add(pinfo);
+                        herbivoreinfos = serializer.Deserialize<List<AnimalCell.Info>>(line.Substring(10));
+                    }
+                    else if(line.StartsWith("Carnivores"))
+                    {
+                        carnivoreinfos = serializer.Deserialize<List<AnimalCell.Info>>(line.Substring(10));
                     }
                 }
             }
@@ -299,12 +285,12 @@ namespace Extinction
                         {
                             if (new_cell_type == typeof(HerbivoreCell))
                             {
-                                HerbivoreCell A = new HerbivoreCell(animalinfos[0]);              
+                                HerbivoreCell A = new HerbivoreCell(herbivoreinfos[0]);              
                                 AddCell(cellx, celly, A);
                             }
                             else if (new_cell_type == typeof(CarnivoreCell))
                             {
-                                CarnivoreCell A = new CarnivoreCell(animalinfos[1]);
+                                CarnivoreCell A = new CarnivoreCell(carnivoreinfos[0]);
                                 AddCell(cellx, celly, A);
                             }
                             else

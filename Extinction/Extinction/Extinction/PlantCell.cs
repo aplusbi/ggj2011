@@ -16,11 +16,12 @@ namespace Extinction
     {
         public struct Info
         {
-            public int width, height; // in number of cells, not yet used
-            public int reproRate; // how long to wait before reproducing
-            public int airRate; // how much air is breathed
-            public int food; // how much energy an animal gets from eating this
-            public int airCutoff; //how much oxygen before plants start dying
+            public int width { get; set; }
+            public int height { get; set; } // in number of cells, not yet used
+            public int reproRate { get; set; } // how long to wait before reproducing
+            public int airRate { get; set; } // how much air is breathed
+            public int food { get; set; } // how much energy an animal gets from eating this
+            public int airCutoff { get; set; } //how much oxygen before plants start dying
         }
         int reproduction;
         public Info info;
