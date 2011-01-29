@@ -1,2 +1,3 @@
-Plants 2
-Herbivores 6
+Plants(1,1,5,1,5)
+Herbivores(1,1,3,5,20,100,75,200)
+Carnivores(1,1,3,5,20,100,75,200)

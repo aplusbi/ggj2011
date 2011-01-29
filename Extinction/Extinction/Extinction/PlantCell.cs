@@ -22,7 +22,7 @@ namespace Extinction
             public int food; // how much energy an animal gets from eating this
         }
         int reproduction;
-        Info info;
+        public Info info;
         public PlantCell()
             : base()
         {

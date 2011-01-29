@@ -24,7 +24,7 @@ namespace Extinction
             public int starved; // hunger level at which they seek food
             public int lifeExectancy; // max age
         }
-        protected Info info;
+        public Info info;
         protected int hunger;
         public int mated;
         public int age;
@@ -34,6 +34,7 @@ namespace Extinction
             info.sated = 100;
             info.starved = 75;
             info.airRate = 5;
+            info.reproRate = 3;
             info.lifeExectancy = 1000000;
             info.food = 20;
 

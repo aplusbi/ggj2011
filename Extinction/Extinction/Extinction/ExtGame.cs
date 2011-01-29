@@ -41,7 +41,8 @@ namespace Extinction
         Texture2D button_down;
         Type new_cell_type;
         long turn_amount;
-
+        List<PlantCell.Info> plantinfos = new List<PlantCell.Info>();
+        List<AnimalCell.Info> animalinfos = new List<AnimalCell.Info>();
         
         public MouseState mouse_state;
         List<Button> buttons;
@@ -192,28 +193,46 @@ namespace Extinction
         public void LoadWorldInfo()
         {
             Random R = new Random();
-            int num_plants = 0;
-            int num_herb = 0;
+            //int num_plants = 0;
+            //int num_herb = 0;
             string line = "";
             using (StreamReader reader =
                 new StreamReader(Content.RootDirectory + "\\world_info.txt"))
             {
                 while ((line = reader.ReadLine()) != null)
                 {
+                    string[] paramstrings = line.Split(new char[] { '(', ',', ')' });
+
                     if (line.StartsWith("Plants"))
                     {
-                        num_plants = int.Parse(line.Split(new char[] { ' ' })[1]);
+                        PlantCell.Info pinfo = new PlantCell.Info();
+                        pinfo.width = int.Parse(paramstrings[1]);
+                        pinfo.height = int.Parse(paramstrings[2]);
+                        pinfo.reproRate = int.Parse(paramstrings[3]);
+                        pinfo.airRate = int.Parse(paramstrings[4]);
+                        pinfo.food = int.Parse(paramstrings[5]);
+                        plantinfos.Add(pinfo);
+
                     }
-                    if (line.StartsWith("Herbivores"))
+                    if (line.StartsWith("Herbivores") || line.StartsWith("Carnivores"))
                     {
-                        num_herb = int.Parse(line.Split(new char[] { ' ' })[1]);
+                        AnimalCell.Info pinfo = new AnimalCell.Info();
+                        pinfo.width = int.Parse(paramstrings[1]);
+                        pinfo.height = int.Parse(paramstrings[2]);
+                        pinfo.reproRate = int.Parse(paramstrings[3]);
+                        pinfo.airRate = int.Parse(paramstrings[4]);
+                        pinfo.food = int.Parse(paramstrings[5]);
+                        pinfo.sated = int.Parse(paramstrings[6]);
+                        pinfo.starved = int.Parse(paramstrings[7]);
+                        pinfo.lifeExectancy = int.Parse(paramstrings[8]);
+                        animalinfos.Add(pinfo);
                     }
                 }
             }
-            for (int ii = 0; ii < num_plants; ii++)
+            /*for (int ii = 0; ii < num_plants; ii++)
                 AddCell(R.Next(0, width), R.Next(0, height), new PlantCell());
             for (int ii = 0; ii < num_herb; ii++)
-                AddCell(R.Next(0, width), R.Next(0, height), new HerbivoreCell());
+                AddCell(R.Next(0, width), R.Next(0, height), new HerbivoreCell());*/
             //Content.RootDirectory
         }
 
@@ -274,7 +293,24 @@ namespace Extinction
                         Cell C = System.Activator.CreateInstance(new_cell_type) as Cell;
                         if (cells[grid[cellx, celly]] is EmptyCell)
                         {
-                            AddCell(cellx, celly, C);
+                            if (C is HerbivoreCell)
+                            {
+                                HerbivoreCell A = C as HerbivoreCell;
+                                A.info = animalinfos[0];
+                                AddCell(cellx, celly, C);
+                            }
+                            else if (C is CarnivoreCell)
+                            {
+                                CarnivoreCell A = C as CarnivoreCell;
+                                A.info = animalinfos[1];
+                                AddCell(cellx, celly, C);
+                            }
+                            else
+                            {
+                                PlantCell A = C as PlantCell;
+                                A.info = plantinfos[0];
+                                AddCell(cellx, celly, C);
+                            }
                         }
                     }
                 }
