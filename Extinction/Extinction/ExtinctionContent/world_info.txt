@@ -1,3 +1,2 @@
-This is some text in this file.
-blah blah blah 
-stuff
+Plants 2
+Herbivores 6

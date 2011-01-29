@@ -120,16 +120,14 @@ namespace Extinction
             buttons.Add(B);
 
             B = new NormalButton("FastForward", button_up, button_down,
-              fastforward_overlay, 130, 10 + (Button.bheight) * 3);
+              fastforward_overlay, 130, 10 + (Button.bheight) * 4);
             B.Pressed += new Button.ButtonPressedHandler(FF_Pressed);
             buttons.Add(B);
 
             B = new NormalButton("Reverse", button_up, button_down,
-              reverse_overlay, 130, 10 + (Button.bheight) * 4);
+              reverse_overlay, 130, 10 + (Button.bheight) * 5);
             B.Pressed += new Button.ButtonPressedHandler(Rev_Pressed);
             buttons.Add(B);
-
-            LoadWorldInfo();
         }
 
         void Plants_Pressed(object sender, EventArgs e)
@@ -177,14 +175,7 @@ namespace Extinction
                 }
             }
             cells.Add(0, new EmptyCell());
-            AddCell(30, 30, new PlantCell());
-            //AddCell(6, 6, new PlantCell());
-            //AddCell(5, 5, new HerbivoreCell());
-            AddCell(20, 20, new HerbivoreCell());
-            //AddCell(25, 20, new HerbivoreCell());
-            //AddCell(30, 20, new HerbivoreCell());
-            //AddCell(35, 20, new HerbivoreCell());
-            //AddCell(33, 20, new HerbivoreCell());
+            LoadWorldInfo();   
 
             turn_amount = 1000;
         }
@@ -200,15 +191,29 @@ namespace Extinction
 
         public void LoadWorldInfo()
         {
+            Random R = new Random();
+            int num_plants = 0;
+            int num_herb = 0;
             string line = "";
             using (StreamReader reader =
                 new StreamReader(Content.RootDirectory + "\\world_info.txt"))
             {
                 while ((line = reader.ReadLine()) != null)
                 {
-                    Console.WriteLine(line);
+                    if (line.StartsWith("Plants"))
+                    {
+                        num_plants = int.Parse(line.Split(new char[] { ' ' })[1]);
+                    }
+                    if (line.StartsWith("Herbivores"))
+                    {
+                        num_herb = int.Parse(line.Split(new char[] { ' ' })[1]);
+                    }
                 }
             }
+            for (int ii = 0; ii < num_plants; ii++)
+                AddCell(R.Next(0, width), R.Next(0, height), new PlantCell());
+            for (int ii = 0; ii < num_herb; ii++)
+                AddCell(R.Next(0, width), R.Next(0, height), new HerbivoreCell());
             //Content.RootDirectory
         }
 
