@@ -280,12 +280,15 @@ namespace Extinction
             {
                 B.Draw(spriteBatch);
             }
-            spriteBatch.Draw(airbar, 
-                new Vector2(offx, offy + height * cheight), Color.White);
+            
             float oxplus = ((float)oxygen / (float)maxOxygen) * barsize;
+            float colorval = ((float)oxygen / (float)maxOxygen) * 255;
+            Color C = new Color((int)colorval, 0, (int)(255 - colorval));
+            spriteBatch.Draw(airbar, 
+                new Vector2(offx, offy + height * cheight), C);
             spriteBatch.Draw(bar_seperator, 
                 new Vector2(offx + oxplus + bar_offset, offy + height * cheight),
-                Color.White);
+                Color.Gold);
 
             spriteBatch.End();
 
