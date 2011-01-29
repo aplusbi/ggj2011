@@ -19,13 +19,18 @@ namespace Extinction
         {
         }
 
-        public override void Reproduce(int i, int j)
+        public override bool Reproduce(int i, int j)
         {
-            ExtGame.AddCell(i, j, new PlantCell());
+            ExtGame.AddCell(i, j, new HerbivoreCell());
+            return true;
         }
         public override bool IsFood(Cell c)
         {
             return c is PlantCell;
+        }
+        public override bool IsMate(Cell c)
+        {
+            return c is HerbivoreCell;
         }
     }
 }
