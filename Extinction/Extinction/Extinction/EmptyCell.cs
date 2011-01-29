@@ -14,8 +14,8 @@ namespace Extinction
 {
     public class EmptyCell : Cell
     {
-        public EmptyCell(int i)
-            : base(i)
+        public EmptyCell()
+            : base()
         {
         }
         public override void Update(GameTime gameTime, int x, int y) { }

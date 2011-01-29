@@ -14,16 +14,40 @@ namespace Extinction
 {
     public class PlantCell: Cell
     {
+        public struct Info
+        {
+            public int reproRate;
+            public int airRate;
+            public int width, height;
+            public int food;
+            public string texID;
+        }
         int reproduction;
-        public PlantCell(int i)
-            : base(i)
+        Info info;
+        public PlantCell()
+            : base()
         {
             reproduction = 0;
+            info = new Info();
+            info.airRate = 1;
+            info.reproRate = 3;
+            info.food = 5;
         }
         public override void Update(GameTime gameTime, int x, int y)
         {
             if (updated)
                 return;
+
+            ExtGame.oxygen += info.airRate;
+            if (ExtGame.oxygen > ExtGame.maxOxygen)
+            {
+                ExtGame.oxygen = ExtGame.maxOxygen;
+                if (r.Next(9) == 0)
+                {
+                    ExtGame.RemoveCell(x, y);
+                    return;
+                }
+            }
 
             ++reproduction;
             base.Update(gameTime, x, y);
@@ -37,13 +61,18 @@ namespace Extinction
         }
         public override bool DoStuff(int x, int y, int i, int j)
         {
-            if (ExtGame.grid[i, j] == 0 && reproduction > 3)
+            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < ExtGame.maxOxygen && reproduction > info.reproRate)
             {
                 reproduction = 0;
-                ExtGame.AddCell(i, j, new PlantCell(0));
+                ExtGame.AddCell(i, j, new PlantCell());
                 return true;
             }
             return false;
+        }
+
+        public int Food()
+        {
+            return info.food;
         }
     }
 }

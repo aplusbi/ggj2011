@@ -17,11 +17,10 @@ namespace Extinction
         protected int id = -1;
         public bool updated;
         public bool drawn;
-        static Random r;
+        static protected Random r;
 
-        public Cell(int i)
+        public Cell()
         {
-            id = i;
             updated = false;
             drawn = false;
             r = new Random();
@@ -31,7 +30,7 @@ namespace Extinction
         {
             for (int i = length-1; i >= 0; --i)
             {
-                int index = r.Next() % (i + 1);
+                int index = r.Next(0, i);
                 int tempx = array[i, 0];
                 int tempy = array[i, 1];
                 array[i, 0] = array[index, 0];

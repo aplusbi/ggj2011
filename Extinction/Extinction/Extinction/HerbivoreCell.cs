@@ -14,15 +14,26 @@ namespace Extinction
 {
     public class HerbivoreCell: Cell
     {
-        int hunger, sated, starved;
+        public struct Info
+        {
+            public int sated, starved;
+            public int reproRate;
+            public int airRate;
+            public int lifeExectancy;
+        }
+        Info info;
+        int hunger;
         public int mated;
         public int age;
         public HerbivoreCell()
-            : base(0)
+            : base()
         {
-            hunger = 100;
-            sated = 70;
-            starved = 30;
+            info.sated = 200;
+            info.starved = 75;
+            info.airRate = -5;
+            info.lifeExectancy = 100;
+
+            hunger = info.sated;
             mated = 0;
             age = 0;
         }
@@ -36,14 +47,33 @@ namespace Extinction
 
             if (--hunger < 0)
             {
-                ExtGame.RemoveCell(x, y);
-                return;
+                if (r.Next(9) == 0)
+                {
+                    ExtGame.RemoveCell(x, y);
+                    return;
+                }
             }
-            if (++age > 100)
+            if (++age > info.lifeExectancy)
             {
-                ExtGame.RemoveCell(x, y);
-                return;
+                int max = Math.Max(0, info.lifeExectancy / 4 - (age - info.lifeExectancy));
+                if (r.Next(max) == 0)
+                {
+                    ExtGame.RemoveCell(x, y);
+                    return;
+                }
             }
+            
+            ExtGame.oxygen += info.airRate;
+            if (ExtGame.oxygen < 0)
+            {
+                ExtGame.oxygen = 0;
+                if (r.Next(9) == 0)
+                {
+                    ExtGame.RemoveCell(x, y);
+                    return;
+                }
+            }
+
             base.Update(gameTime, x, y);
         }
 
@@ -57,7 +87,7 @@ namespace Extinction
         public override bool DoStuff(int x, int y, int i, int j)
         {
             Cell neighbor = ExtGame.cells[ExtGame.grid[i, j]];
-            if (neighbor is HerbivoreCell && mated > 10)
+            if (neighbor is HerbivoreCell && mated > info.reproRate && hunger > info.sated && ExtGame.oxygen > 0)
             {
                 mated = -1;
                 return false;
@@ -75,10 +105,11 @@ namespace Extinction
                 }
                 return true;
             }
-            if (neighbor is PlantCell && hunger < sated)
+            if (neighbor is PlantCell && hunger < info.sated)
             {
+                PlantCell p = neighbor as PlantCell;
                 ExtGame.RemoveCell(i, j);
-                hunger += 5;
+                hunger += p.Food();
                 return true;
             }
             return false;

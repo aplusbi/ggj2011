@@ -24,6 +24,7 @@ namespace Extinction
         static int currID = 1;
         public static int[,] grid;
         public static Dictionary<int, Cell> cells;
+        public static int oxygen, maxOxygen;
         Texture2D background;
         TimeSpan elapsed;
         public static Texture2D empty_tile;
@@ -52,6 +53,8 @@ namespace Extinction
             cheight = 10;
             offx = 180;
             offy = 30;
+            oxygen = 2000;
+            maxOxygen = 4000;
             grid = new int[width, height];
             for (int h = 0; h < height; ++h)
             {
@@ -61,9 +64,9 @@ namespace Extinction
                 }
             }
 
-            cells.Add(0, new EmptyCell(0));
-            AddCell(30, 40, new PlantCell(0));
-            AddCell(6, 6, new PlantCell(0));
+            cells.Add(0, new EmptyCell());
+            AddCell(30, 40, new PlantCell());
+            AddCell(6, 6, new PlantCell());
             AddCell(5, 5, new HerbivoreCell());
             AddCell(20, 20, new HerbivoreCell());
             AddCell(25, 20, new HerbivoreCell());
@@ -115,8 +118,9 @@ namespace Extinction
                 this.Exit();
 
             elapsed = elapsed + gameTime.ElapsedGameTime;
-            if(elapsed >= new TimeSpan(0,0,0))
+            if(elapsed >= new TimeSpan(0,0,0,1,000))
             {
+                Console.WriteLine("Oxygen: " + oxygen);
                 elapsed = new TimeSpan(0);
                 for (int y = 0; y < height; ++y)
                 {
