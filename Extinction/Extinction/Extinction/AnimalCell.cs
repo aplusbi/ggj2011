@@ -23,6 +23,7 @@ namespace Extinction
             public int sated; // hunger level at which they are full
             public int starved; // hunger level at which they seek food
             public int lifeExectancy; // max age
+            public int airCutoff;
         }
         public Info info;
         protected int hunger;
@@ -37,6 +38,7 @@ namespace Extinction
             info.reproRate = 3;
             info.lifeExectancy = 1000000;
             info.food = 20;
+            info.airCutoff = 300;
 
             hunger = info.sated;
             mated = 0;
@@ -69,16 +71,22 @@ namespace Extinction
             }
             
             ExtGame.oxygen -= info.airRate;
-            if (ExtGame.oxygen < 0)
+            if (ExtGame.oxygen < 1)
             {
-                ExtGame.oxygen = 0;
-                if (r.Next(9) == 0)
+                ExtGame.oxygen = 1;
+            }
+            if (ExtGame.oxygen < info.airCutoff)
+            {
+                float deathChance =
+                    (float)(info.airCutoff) /
+                    (float)(ExtGame.oxygen);
+                deathChance *= 100;
+                if (r.Next(100) <= deathChance)
                 {
                     ExtGame.RemoveCell(x, y);
                     return;
                 }
             }
-
             if (SeekFood(x, y))
                 updated = true;
             else if (SeekMate(x, y))

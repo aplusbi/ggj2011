@@ -211,6 +211,7 @@ namespace Extinction
                         pinfo.reproRate = int.Parse(paramstrings[3]);
                         pinfo.airRate = int.Parse(paramstrings[4]);
                         pinfo.food = int.Parse(paramstrings[5]);
+                        pinfo.airCutoff = int.Parse(paramstrings[6]);
                         plantinfos.Add(pinfo);
 
                     }
@@ -225,6 +226,7 @@ namespace Extinction
                         pinfo.sated = int.Parse(paramstrings[6]);
                         pinfo.starved = int.Parse(paramstrings[7]);
                         pinfo.lifeExectancy = int.Parse(paramstrings[8]);
+                        pinfo.airCutoff = int.Parse(paramstrings[9]);
                         animalinfos.Add(pinfo);
                     }
                 }
