@@ -77,6 +77,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComicSans.spritefont">
+      <Name>ComicSans</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
     <None Include="world_info.txt">
       <Name>world_info</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

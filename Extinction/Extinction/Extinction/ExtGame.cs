@@ -21,6 +21,8 @@ namespace Extinction
         SpriteBatch spriteBatch;
         public static int width, height;
         public static int cwidth, cheight;
+        int score;
+        bool has_begun = false;
         int offx, offy;
         int cursorx, cursory;
         static int currID = 1;
@@ -29,6 +31,7 @@ namespace Extinction
         public static int oxygen, maxOxygen;
         Texture2D background;
         TimeSpan elapsed;
+        public SpriteFont theFont;
         public static Texture2D empty_tile;
         public Texture2D cursor_tex;
         public static Texture2D green_tile;
@@ -92,6 +95,7 @@ namespace Extinction
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            theFont = Content.Load<SpriteFont>("ComicSans");
             background = Content.Load<Texture2D>("background");
             empty_tile = Content.Load<Texture2D>("brown_tile");
             green_tile = Content.Load<Texture2D>("green_tile");
@@ -113,14 +117,17 @@ namespace Extinction
             Button B = new Button("Plants", button_up, button_down, 
                 plants_overlay, 130, 10);
             B.Pressed += new Button.ButtonPressedHandler(Plants_Pressed);
+            B.Pressed += new Button.ButtonPressedHandler(Cells_Pressed);
             buttons.Add(B);
             B = new Button("Herbivore", button_up, button_down, 
                 herb_overlay, 130, 10+ Button.bheight);
             B.Pressed += new Button.ButtonPressedHandler(Herbivore_Pressed);
+            B.Pressed += new Button.ButtonPressedHandler(Cells_Pressed);
             buttons.Add(B);
             B = new Button("Carnivore", button_up, button_down,  
                 carn_overlay, 130, 10+(Button.bheight)*2);
             B.Pressed += new Button.ButtonPressedHandler(Carnivore_Pressed);
+            B.Pressed += new Button.ButtonPressedHandler(Cells_Pressed);
             buttons.Add(B);
 
             B = new NormalButton("FastForward", button_up, button_down,
@@ -132,6 +139,14 @@ namespace Extinction
               reverse_overlay, 130, 10 + (Button.bheight) * 5);
             B.Pressed += new Button.ButtonPressedHandler(Rev_Pressed);
             buttons.Add(B);
+        }
+
+        void Cells_Pressed(object sender, EventArgs e)
+        {
+            if (!has_begun)
+            {
+                has_begun = true;
+            }
         }
 
         void Plants_Pressed(object sender, EventArgs e)
@@ -169,6 +184,8 @@ namespace Extinction
 
         public void Reset()
         {
+            has_begun = false;
+            score = 0;
             oxygen = 2000;
             cells.Clear();
             for (int h = 0; h < height; ++h)
@@ -255,6 +272,7 @@ namespace Extinction
                 {
                     c.updated = false;
                 }
+                if(has_begun) score++;
             }
 
             //update the position of the cursor based on the mouse position
@@ -356,6 +374,9 @@ namespace Extinction
             spriteBatch.Draw(bar_seperator, 
                 new Vector2(offx + oxplus + bar_offset, offy + height * cheight),
                 Color.Gold);
+
+            spriteBatch.DrawString(theFont, "Score: " + score.ToString(),
+                new Vector2(130, 20 + (Button.bheight) * 6), Color.White);
 
             spriteBatch.End();
 
