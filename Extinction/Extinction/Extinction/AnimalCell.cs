@@ -155,16 +155,21 @@ namespace Extinction
                     // if food, we are done
                     if (IsFood(c))
                     {
+                        // if we are at the root FEAST
+                        if (v[0] == x && v[1] == y)
+                        {
+                            Eat(ExtGame.cells[ExtGame.grid[sx, sy]], sx, sy);
+                            return true;
+                        }
                         int[] p = v;
                         // traverse backwards
-                        while (p[2] != x && p[3] != y)
+                        while (p[2] != x || p[3] != y)
                         {
                             // get the parent
                             p = lookup[p[2] + p[3] * ExtGame.width];
                         }
 
-                        if (!Eat(ExtGame.cells[ExtGame.grid[p[0], p[1]]], p[0], p[1]))
-                            Move(x, y, p[0], p[1]);
+                        Move(x, y, p[0], p[1]);
                         return true;
                     }
 

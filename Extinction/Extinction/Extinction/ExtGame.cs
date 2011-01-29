@@ -191,6 +191,9 @@ namespace Extinction
 
         public void LoadWorldInfo()
         {
+            AddCell(20, 20, new PlantCell());
+            AddCell(30, 30, new HerbivoreCell());
+            return;
             Random R = new Random();
             int num_plants = 0;
             int num_herb = 0;
