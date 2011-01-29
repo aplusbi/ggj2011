@@ -108,6 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cell.cs" />
+    <Compile Include="HerbivoreCell.cs" />
+    <Compile Include="PlantCell.cs" />
     <Compile Include="EmptyCell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

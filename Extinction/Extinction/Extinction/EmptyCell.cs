@@ -14,14 +14,18 @@ namespace Extinction
 {
     public class EmptyCell : Cell
     {
-        public EmptyCell(int i, int[,] g)
-            : base(i, g)
+        public EmptyCell(int i)
+            : base(i)
         {
         }
         public override void Update(GameTime gameTime, int x, int y) { }
         public override void Draw(SpriteBatch S, int x, int y) 
         {
             S.Draw(ExtGame.empty_tile, new Vector2(x, y), Color.White);
+        }
+        public override bool DoStuff(int x, int y, int i, int j)
+        {
+            return true;
         }
     }
 }

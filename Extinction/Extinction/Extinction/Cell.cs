@@ -14,19 +14,59 @@ namespace Extinction
 {
     public abstract class Cell
     {
-        int[,] grid;
-        int id = -1;
+        protected int id = -1;
         public bool updated;
         public bool drawn;
-        public Cell(int i, int[,] g)
+        static Random r;
+
+        public Cell(int i)
         {
             id = i;
-            grid = g;
             updated = false;
             drawn = false;
+            r = new Random();
         }
 
-        public abstract void Update(GameTime gameTime, int x, int y);
+        void Shuffle(int[,] array, int length)
+        {
+            for (int i = length-1; i >= 0; --i)
+            {
+                int index = r.Next() % (i + 1);
+                int tempx = array[i, 0];
+                int tempy = array[i, 1];
+                array[i, 0] = array[index, 0];
+                array[i, 1] = array[index, 1];
+                array[index, 0] = tempx;
+                array[index, 1] = tempy;
+            }
+        }
+
+        public virtual void Update(GameTime gameTime, int x, int y)
+        {
+            // check everything around it
+            int[,] spots = new int[8,2];
+            int index = 0;
+            for (int j = Math.Max(y - 1, 0); j <= Math.Min(y + 1, ExtGame.height - 1); ++j)
+            {
+                for (int i = Math.Max(x - 1, 0); i <= Math.Min(x + 1, ExtGame.width - 1); ++i)
+                {
+                    if ((i != x || j != y))
+                    {
+                        spots[index,0] = i;
+                        spots[index,1] = j;
+                        ++index;
+                    }
+                }
+            }
+            Shuffle(spots, index);
+            for(int i=0; i<index; ++i)
+            {
+                if(DoStuff(x, y, spots[i,0], spots[i,1]))
+                    break;
+            }
+            
+        }
         public abstract void Draw(SpriteBatch S, int x, int y);
+        public abstract bool DoStuff(int x, int y, int i, int j);
     }
 }

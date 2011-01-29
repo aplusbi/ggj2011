@@ -18,14 +18,17 @@ namespace Extinction
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        int width, height;
-        int cwidth, cheight;
+        public static int width, height;
+        public static int cwidth, cheight;
         int offx, offy;
         static int currID = 1;
-        public int[,] grid;
-        Dictionary<int, Cell> cells;
+        public static int[,] grid;
+        public static Dictionary<int, Cell> cells;
         Texture2D background;
+        TimeSpan elapsed;
         public static Texture2D empty_tile;
+        public static Texture2D green_tile;
+        public static Texture2D red_tile;
 
         public ExtGame()
         {
@@ -58,7 +61,15 @@ namespace Extinction
                 }
             }
 
-            cells.Add(0, new EmptyCell(0, grid));
+            cells.Add(0, new EmptyCell(0));
+            AddCell(30, 40, new PlantCell(0));
+            AddCell(6, 6, new PlantCell(0));
+            AddCell(5, 5, new HerbivoreCell());
+            AddCell(20, 20, new HerbivoreCell());
+            AddCell(25, 20, new HerbivoreCell());
+            AddCell(30, 20, new HerbivoreCell());
+            AddCell(35, 20, new HerbivoreCell());
+            AddCell(40, 20, new HerbivoreCell());
 
             base.Initialize();
             IsMouseVisible = true;
@@ -78,6 +89,8 @@ namespace Extinction
 
             background = Content.Load<Texture2D>("background");
             empty_tile = Content.Load<Texture2D>("brown_tile");
+            green_tile = Content.Load<Texture2D>("green_tile");
+            red_tile = Content.Load<Texture2D>("red_tile");
             // TODO: use this.Content to load your game content here
         }
 
@@ -101,18 +114,22 @@ namespace Extinction
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
-            for (int y = 0; y < height; ++y)
+            elapsed = elapsed + gameTime.ElapsedGameTime;
+            if(elapsed >= new TimeSpan(0,0,0))
             {
-                for (int x = 0; x < width; ++x)
+                elapsed = new TimeSpan(0);
+                for (int y = 0; y < height; ++y)
                 {
-                    cells[grid[x, y]].Update(gameTime, x, y);
+                    for (int x = 0; x < width; ++x)
+                    {
+                        cells[grid[x, y]].Update(gameTime, x, y);
 
+                    }
                 }
-            }
-            foreach(Cell c in cells.Values)
-            {
-                c.updated = false;
+                foreach(Cell c in cells.Values)
+                {
+                    c.updated = false;
+                }
             }
 
             base.Update(gameTime);
@@ -138,6 +155,10 @@ namespace Extinction
                     cells[grid[w, h]].Draw(spriteBatch, x, y);
                 }
             }
+            foreach (Cell c in cells.Values)
+            {
+                c.drawn = false;
+            }
 
             spriteBatch.End();
 
@@ -147,6 +168,31 @@ namespace Extinction
         public static int GetID()
         {
             return currID++;
+        }
+
+        public static bool AddCell(int x, int y, Cell c)
+        {
+            if (grid[x, y] != 0)
+                return false;
+
+            int id = GetID();
+            cells.Add(id, c);
+            grid[x, y] = id;
+
+            return true;
+        }
+        public static void RemoveCell(int x, int y)
+        {
+            int id = grid[x, y];
+            cells.Remove(id);
+            for (int h = 0; h < height; ++h)
+            {
+                for (int w = 0; w < width; ++w)
+                {
+                    if(grid[x,y] == id)
+                        grid[x, y] = 0;
+                }
+            }
         }
     }
 }
