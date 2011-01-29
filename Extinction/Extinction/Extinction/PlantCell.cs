@@ -70,7 +70,7 @@ namespace Extinction
             return false;
         }
 
-        public int Food()
+        public override int Food()
         {
             return info.food;
         }

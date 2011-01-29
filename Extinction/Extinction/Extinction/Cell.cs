@@ -26,7 +26,7 @@ namespace Extinction
             r = new Random();
         }
 
-        void Shuffle(int[,] array, int length)
+        public void Shuffle(int[,] array, int length)
         {
             for (int i = length-1; i >= 0; --i)
             {
@@ -40,10 +40,8 @@ namespace Extinction
             }
         }
 
-        public virtual void Update(GameTime gameTime, int x, int y)
+        public int Spots(int x, int y, int[,] arr)
         {
-            // check everything around it
-            int[,] spots = new int[8,2];
             int index = 0;
             for (int j = Math.Max(y - 1, 0); j <= Math.Min(y + 1, ExtGame.height - 1); ++j)
             {
@@ -51,13 +49,22 @@ namespace Extinction
                 {
                     if ((i != x || j != y))
                     {
-                        spots[index,0] = i;
-                        spots[index,1] = j;
+                        arr[index, 0] = i;
+                        arr[index, 1] = j;
                         ++index;
                     }
                 }
             }
+            return index;
+        }
+
+        public virtual void Update(GameTime gameTime, int x, int y)
+        {
+            // check everything around it
+            int[,] spots = new int[8,2];
+            int index = Spots(x, y, spots);
             Shuffle(spots, index);
+
             for(int i=0; i<index; ++i)
             {
                 if(DoStuff(x, y, spots[i,0], spots[i,1]))
@@ -67,5 +74,6 @@ namespace Extinction
         }
         public abstract void Draw(SpriteBatch S, int x, int y);
         public abstract bool DoStuff(int x, int y, int i, int j);
+        public virtual int Food() { return 0; }
     }
 }

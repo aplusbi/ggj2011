@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Extinction
 {
-    public class AnimalCell: Cell
+    public abstract class AnimalCell: Cell
     {
         public struct Info
         {
@@ -21,6 +21,7 @@ namespace Extinction
             public int reproRate;
             public int airRate;
             public int lifeExectancy;
+            public int food;
         }
         protected Info info;
         protected int hunger;
@@ -33,6 +34,7 @@ namespace Extinction
             info.starved = 75;
             info.airRate = -5;
             info.lifeExectancy = 100;
+            info.food = 20;
 
             hunger = info.sated;
             mated = 0;
@@ -75,7 +77,8 @@ namespace Extinction
                 }
             }
 
-            base.Update(gameTime, x, y);
+            if(!SeekFood(x, y))
+                base.Update(gameTime, x, y);
         }
 
         public override void Draw(SpriteBatch S, int x, int y)
@@ -88,7 +91,7 @@ namespace Extinction
         public override bool DoStuff(int x, int y, int i, int j)
         {
             Cell neighbor = ExtGame.cells[ExtGame.grid[i, j]];
-            if (neighbor is AnimalCell && mated > info.reproRate && hunger > info.sated && ExtGame.oxygen > 0)
+            if (neighbor is AnimalCell && mated > info.reproRate && ExtGame.oxygen > 0)
             {
                 mated = -1;
                 return false;
@@ -97,23 +100,84 @@ namespace Extinction
             {
                 if (mated == -1)
                 {
-                    ExtGame.AddCell(i, j, new AnimalCell());
+                    Reproduce(i, j);
                 }
                 else
                 {
-                    ExtGame.grid[i, j] = ExtGame.grid[x, y];
-                    ExtGame.grid[x, y] = 0;
+                    Move(x, y, i, j);
                 }
                 return true;
             }
-            if (neighbor is PlantCell && hunger < info.sated)
+            return Eat(neighbor, i, j);
+        }
+        public override int Food()
+        {
+            return info.food;
+        }
+        public void Move(int x, int y, int i, int j)
+        {
+            ExtGame.grid[i, j] = ExtGame.grid[x, y];
+            ExtGame.grid[x, y] = 0;
+        }
+        public bool SeekFood(int x, int y)
+        {
+            if (hunger > info.starved)
+                return false;
+
+            Queue<int[]> vertices = new Queue<int[]>();
+            IDictionary<int[], int[]> lookup = new Dictionary<int[], int[]>();
+            // vertex plus parent vertex
+            vertices.Enqueue(new int[4]{x, y, x, y});
+            lookup.Add(new int[2] { x, y }, new int[4]{ x, y, x, y} );
+
+            while (vertices.Count > 0)
             {
-                PlantCell p = neighbor as PlantCell;
+                int[] v = vertices.Dequeue();
+                int[,] spots = new int[8, 2];
+                int len = Spots(v[0], v[1], spots);
+                for (int i = 0; i < len; ++i)
+                {
+                    int sx = spots[i, 0];
+                    int sy = spots[i, 1];
+                    Cell c = ExtGame.cells[ExtGame.grid[sx, sy]];
+
+                    // if food, we are done
+                    if (IsFood(c))
+                    {
+                        int[] p = v;
+                        // traverse backwards
+                        while (p[0] != x && p[1] != y)
+                        {
+                            // get the parent
+                            p = lookup[new int[2] { p[2], p[3] }];
+                        }
+
+                        if (!Eat(ExtGame.cells[ExtGame.grid[p[0], p[1]]], p[0], p[1]))
+                            Move(x, y, p[0], p[1]);
+                        return true;
+                    }
+
+                    // don't add visited nodes
+                    if (lookup[new int[2]{sx, sy}] != new int[4] && c is EmptyCell)
+                    {
+                        vertices.Enqueue(new int[4] { sx, sy, v[0], v[1] });
+                        lookup.Add(new int[2] { sx, sy }, new int[4] { sx, sy, v[0], v[1] });
+                    }
+                }
+            }
+            return true;
+        }
+        public bool Eat(Cell neighbor, int i, int j)
+        {
+            if (IsFood(neighbor) && hunger < info.sated)
+            {
                 ExtGame.RemoveCell(i, j);
-                hunger += p.Food();
+                hunger += neighbor.Food();
                 return true;
             }
             return false;
         }
+        public abstract void Reproduce(int i, int j);
+        public abstract bool IsFood(Cell c);
     }
 }
