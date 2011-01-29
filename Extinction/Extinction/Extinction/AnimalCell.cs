@@ -32,14 +32,14 @@ namespace Extinction
         public AnimalCell()
             : base()
         {
-            info.sated = 100;
-            info.starved = 75;
-            info.airRate = 5;
-            info.reproRate = 3;
-            info.lifeExectancy = 1000000;
-            info.food = 20;
-            info.airCutoff = 300;
-
+            hunger = info.sated;
+            mated = 0;
+            age = 0;
+        }
+        public AnimalCell(Info i)
+            : base()
+        {
+            info = i;
             hunger = info.sated;
             mated = 0;
             age = 0;
@@ -105,7 +105,7 @@ namespace Extinction
         public override bool DoStuff(int x, int y, int i, int j)
         {
             Cell neighbor = ExtGame.cells[ExtGame.grid[i, j]];
-            if (neighbor is AnimalCell && mated > info.reproRate && ExtGame.oxygen > 50)
+            if (neighbor is AnimalCell && mated > info.reproRate && ExtGame.oxygen > 100)
             {
                 mated = -1;
                 return false;

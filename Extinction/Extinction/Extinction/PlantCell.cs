@@ -25,14 +25,13 @@ namespace Extinction
         int reproduction;
         public Info info;
         public PlantCell()
-            : base()
         {
             reproduction = 0;
-            info = new Info();
-            info.airRate = 1;
-            info.reproRate = 3;
-            info.food = 5;
-            info.airCutoff = 3400;
+        }
+        public PlantCell(Info i)
+        {
+            info = i;
+            reproduction = 0;
         }
         public override void Update(GameTime gameTime, int x, int y)
         {
@@ -69,10 +68,10 @@ namespace Extinction
         }
         public override bool DoStuff(int x, int y, int i, int j)
         {
-            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < ExtGame.maxOxygen && reproduction > info.reproRate)
+            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < ExtGame.maxOxygen-100 && reproduction > info.reproRate)
             {
                 reproduction = 0;
-                ExtGame.AddCell(i, j, new PlantCell());
+                ExtGame.AddCell(i, j, new PlantCell(info));
                 return true;
             }
             return false;
