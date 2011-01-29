@@ -99,7 +99,12 @@ namespace Extinction
                 for (int x = 0; x < width; ++x)
                 {
                     cells[grid[x, y]].Update(gameTime, x, y);
+
                 }
+            }
+            foreach(Cell c in cells.Values)
+            {
+                c.updated = false;
             }
 
             base.Update(gameTime);

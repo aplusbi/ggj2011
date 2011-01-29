@@ -16,11 +16,12 @@ namespace Extinction
     {
         int[,] grid;
         int id = -1;
-        bool updated { set; get; }
+        public bool updated;
         public Cell(int i, int[,] g)
         {
             id = i;
             grid = g;
+            updated = false;
         }
 
         public abstract void Update(GameTime gameTime, int x, int y);
