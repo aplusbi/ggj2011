@@ -72,26 +72,7 @@ namespace Extinction
             oxygen = 2000;
             maxOxygen = 4000;
             grid = new int[width, height];
-            for (int h = 0; h < height; ++h)
-            {
-                for (int w = 0; w < width; ++w)
-                {
-                    grid[w, h] = 0;
-                }
-            }
-
-            cells.Add(0, new EmptyCell());
-            AddCell(30, 30, new PlantCell());
-            AddCell(6, 6, new PlantCell());
-            AddCell(5, 5, new HerbivoreCell());
-            AddCell(20, 20, new HerbivoreCell());
-            AddCell(25, 20, new HerbivoreCell());
-            AddCell(30, 20, new HerbivoreCell());
-            AddCell(35, 20, new HerbivoreCell());
-            AddCell(33, 20, new HerbivoreCell());
-
-            turn_amount = 1000;
-
+            this.Reset();
             base.Initialize();
             IsMouseVisible = true;
             graphics.PreferredBackBufferHeight = 700;
@@ -184,6 +165,30 @@ namespace Extinction
             turn_amount *= 2;
         }
 
+        public void Reset()
+        {
+            oxygen = 2000;
+            cells.Clear();
+            for (int h = 0; h < height; ++h)
+            {
+                for (int w = 0; w < width; ++w)
+                {
+                    grid[w, h] = 0;
+                }
+            }
+            cells.Add(0, new EmptyCell());
+            AddCell(30, 30, new PlantCell());
+            AddCell(6, 6, new PlantCell());
+            AddCell(5, 5, new HerbivoreCell());
+            AddCell(20, 20, new HerbivoreCell());
+            AddCell(25, 20, new HerbivoreCell());
+            AddCell(30, 20, new HerbivoreCell());
+            AddCell(35, 20, new HerbivoreCell());
+            AddCell(33, 20, new HerbivoreCell());
+
+            turn_amount = 1000;
+        }
+
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
@@ -274,6 +279,11 @@ namespace Extinction
                 B.Update(mouse_state);
             }
 
+            //check for reset
+            if (Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                this.Reset();
+            }
             base.Update(gameTime);
         }
 
