@@ -17,11 +17,12 @@ namespace Extinction
         public struct Info
         {
             public int width, height;
-            public int sated, starved;
             public int reproRate;
             public int airRate;
-            public int lifeExectancy;
             public int food;
+            public int sated; // hunger level at which they are full
+            public int starved; // hunger level at which they seek food
+            public int lifeExectancy; // max age
         }
         protected Info info;
         protected int hunger;
@@ -32,7 +33,7 @@ namespace Extinction
         {
             info.sated = 100;
             info.starved = 75;
-            info.airRate = -5;
+            info.airRate = 5;
             info.lifeExectancy = 1000000;
             info.food = 20;
 
@@ -66,7 +67,7 @@ namespace Extinction
                 }
             }
             
-            ExtGame.oxygen += info.airRate;
+            ExtGame.oxygen -= info.airRate;
             if (ExtGame.oxygen < 0)
             {
                 ExtGame.oxygen = 0;
