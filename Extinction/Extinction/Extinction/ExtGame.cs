@@ -35,10 +35,12 @@ namespace Extinction
         public static Texture2D red_tile;
         Texture2D airbar, bar_seperator;
         int barsize = 568, bar_offset = 40;
-        Texture2D plants_overlay, herb_overlay, carn_overlay;
+        Texture2D plants_overlay, herb_overlay, carn_overlay, fastforward_overlay,
+            reverse_overlay;
         Texture2D button_up;
         Texture2D button_down;
         Type new_cell_type;
+        long turn_amount;
 
         
         public MouseState mouse_state;
@@ -88,6 +90,8 @@ namespace Extinction
             AddCell(35, 20, new HerbivoreCell());
             AddCell(33, 20, new HerbivoreCell());
 
+            turn_amount = 1000;
+
             base.Initialize();
             IsMouseVisible = true;
             graphics.PreferredBackBufferHeight = 700;
@@ -116,6 +120,9 @@ namespace Extinction
             button_down = Content.Load<Texture2D>("button_down");
             airbar = Content.Load<Texture2D>("airbar");
             bar_seperator = Content.Load<Texture2D>("bar_seperator");
+            fastforward_overlay = Content.Load<Texture2D>("fastforward");
+            reverse_overlay = Content.Load<Texture2D>("reverse");
+           
             // TODO: use this.Content to load your game content here
 
             Button B = new Button("Plants", button_up, button_down, 
@@ -129,6 +136,16 @@ namespace Extinction
             B = new Button("Carnivore", button_up, button_down,  
                 carn_overlay, 130, 10+(Button.bheight)*2);
             B.Pressed += new Button.ButtonPressedHandler(Carnivore_Pressed);
+            buttons.Add(B);
+
+            B = new NormalButton("FastForward", button_up, button_down,
+              fastforward_overlay, 130, 10 + (Button.bheight) * 3);
+            B.Pressed += new Button.ButtonPressedHandler(FF_Pressed);
+            buttons.Add(B);
+
+            B = new NormalButton("Reverse", button_up, button_down,
+              reverse_overlay, 130, 10 + (Button.bheight) * 4);
+            B.Pressed += new Button.ButtonPressedHandler(Rev_Pressed);
             buttons.Add(B);
 
             LoadWorldInfo();
@@ -154,6 +171,17 @@ namespace Extinction
             foreach (Button B in buttons)
                 if (B != sender as Button)
                     B.DeSelect();
+        }
+
+        void FF_Pressed(object sender, EventArgs e)
+        {
+            turn_amount /= 2;
+            if (turn_amount < 1)
+                turn_amount = 1;
+        }
+        void Rev_Pressed(object sender, EventArgs e)
+        {
+            turn_amount *= 2;
         }
 
         /// <summary>
@@ -191,7 +219,8 @@ namespace Extinction
                 this.Exit();
 
             elapsed = elapsed + gameTime.ElapsedGameTime;
-            if(elapsed >= new TimeSpan(0,0,0,1,000))
+            TimeSpan span = new TimeSpan(turn_amount*10000);
+            if(elapsed >= span)
             {
                 Console.WriteLine("Oxygen: " + oxygen);
                 elapsed = new TimeSpan(0);

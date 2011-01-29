@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Extinction
 {
-    class Button
+    public class Button
     {
         public Texture2D tex_up, tex_down, tex_overlay;
         public bool is_pressed = false, is_active = false;
@@ -38,7 +38,7 @@ namespace Extinction
             if (Pressed != null)
                 Pressed(this, e);
         }
-        public void Update(MouseState M)
+        public virtual void Update(MouseState M)
         {
 
             Rectangle pointRect = new Rectangle(M.X, M.Y, 1, 1); 
@@ -80,6 +80,40 @@ namespace Extinction
             Texture2D tex_base = (is_pressed==true)?(tex_down):(tex_up);
             S.Draw(tex_base, new Vector2(x, y), Color.White);
             S.Draw(tex_overlay, new Vector2(x, y), Color.White);
+        }
+    }
+    public class NormalButton :  Button
+    {
+        public NormalButton(string name,
+            Texture2D up, Texture2D down, Texture2D overlay,
+            int x_in, int y_in)
+            : base(name, up, down, overlay, x_in, y_in)
+        {
+        }
+        public override void Update(MouseState M)
+        {
+            Rectangle pointRect = new Rectangle(M.X, M.Y, 1, 1);
+            Rectangle buttonRect =
+                new Rectangle(this.x, this.y, Button.bwidth, Button.bheight);
+            if (buttonRect.Intersects(pointRect))
+            {
+                //mousing over
+                if (M.LeftButton == ButtonState.Pressed)
+                {
+                    if (!is_pressed) is_pressed = true;
+                }
+                else
+                {
+                    if (is_pressed)
+                        OnPressed(new EventArgs());
+
+                    is_pressed = false;
+                }
+            }
+            else if (M.LeftButton != ButtonState.Pressed)
+            {
+                is_pressed = false;
+            }
         }
     }
 }
