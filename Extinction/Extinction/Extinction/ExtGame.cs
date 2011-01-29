@@ -33,6 +33,7 @@ namespace Extinction
         public Texture2D cursor_tex;
         public static Texture2D green_tile;
         public static Texture2D red_tile;
+        public static Texture2D orange_tile;
         Texture2D airbar, bar_seperator;
         int barsize = 568, bar_offset = 40;
         Texture2D plants_overlay, herb_overlay, carn_overlay, fastforward_overlay,
@@ -94,6 +95,7 @@ namespace Extinction
             empty_tile = Content.Load<Texture2D>("brown_tile");
             green_tile = Content.Load<Texture2D>("green_tile");
             red_tile = Content.Load<Texture2D>("red_tile");
+            orange_tile = Content.Load<Texture2D>("orange_tile");
             cursor_tex = Content.Load<Texture2D>("cursor");
             plants_overlay = Content.Load<Texture2D>("plants");
             carn_overlay = Content.Load<Texture2D>("carnivore");

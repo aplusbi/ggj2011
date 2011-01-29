@@ -94,14 +94,6 @@ namespace Extinction
 
             base.Update(gameTime, x, y);
         }
-
-        public override void Draw(SpriteBatch S, int x, int y)
-        {
-            if (drawn)
-                return;
-
-            S.Draw(ExtGame.red_tile, new Vector2(x, y), Color.White);
-        }
         public override bool DoStuff(int x, int y, int i, int j)
         {
             Cell neighbor = ExtGame.cells[ExtGame.grid[i, j]];

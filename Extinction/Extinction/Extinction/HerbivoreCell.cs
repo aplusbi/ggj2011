@@ -36,5 +36,12 @@ namespace Extinction
         {
             return c is HerbivoreCell;
         }
+        public override void Draw(SpriteBatch S, int x, int y)
+        {
+            if (drawn)
+                return;
+
+            S.Draw(ExtGame.red_tile, new Vector2(x, y), Color.White);
+        }
     }
 }
