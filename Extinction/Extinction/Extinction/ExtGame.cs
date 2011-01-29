@@ -33,9 +33,11 @@ namespace Extinction
         public Texture2D cursor_tex;
         public static Texture2D green_tile;
         public static Texture2D red_tile;
-        Texture2D plants_overlay;
+        Texture2D plants_overlay, herb_overlay, carn_overlay;
         Texture2D button_up;
         Texture2D button_down;
+        Type new_cell_type;
+
         
         public MouseState mouse_state;
         List<Button> buttons;
@@ -106,14 +108,48 @@ namespace Extinction
             red_tile = Content.Load<Texture2D>("red_tile");
             cursor_tex = Content.Load<Texture2D>("cursor");
             plants_overlay = Content.Load<Texture2D>("plants");
+            carn_overlay = Content.Load<Texture2D>("carnivore");
+            herb_overlay = Content.Load<Texture2D>("herbivore");
             button_up = Content.Load<Texture2D>("button_up");
             button_down = Content.Load<Texture2D>("button_down");
             // TODO: use this.Content to load your game content here
 
-            Button B = new Button(button_up, button_down, plants_overlay, 0, 0);
+            Button B = new Button("Plants", button_up, button_down, 
+                plants_overlay, 0, 0);
+            B.Pressed += new Button.ButtonPressedHandler(Plants_Pressed);
+            buttons.Add(B);
+            B = new Button("Herbivore", button_up, button_down, 
+                herb_overlay, 0, Button.bheight);
+            B.Pressed += new Button.ButtonPressedHandler(Herbivore_Pressed);
+            buttons.Add(B);
+            B = new Button("Carnivore", button_up, button_down,  
+                carn_overlay, 0, Button.bheight*2);
+            B.Pressed += new Button.ButtonPressedHandler(Carnivore_Pressed);
             buttons.Add(B);
 
             LoadWorldInfo();
+        }
+
+        void Plants_Pressed(object sender, EventArgs e)
+        {
+            new_cell_type = typeof(PlantCell);
+            foreach (Button B in buttons)
+                if (B != sender as Button)
+                    B.DeSelect();
+        }
+        void Herbivore_Pressed(object sender, EventArgs e)
+        {
+            new_cell_type = typeof(HerbivoreCell);
+            foreach (Button B in buttons)
+                if (B != sender as Button)
+                    B.DeSelect();
+        }
+        void Carnivore_Pressed(object sender, EventArgs e)
+        {
+            new_cell_type = typeof(CarnivoreCell);
+            foreach (Button B in buttons)
+                if (B != sender as Button)
+                    B.DeSelect();
         }
 
         /// <summary>
@@ -184,6 +220,20 @@ namespace Extinction
             if (cursory > (height - 1) * cheight) cursory = (height - 1) * cheight;
             if (cursorx < 0) cursorx = 0;
             if (cursory < 0) cursory = 0;
+
+            if(mousex >= 0 && mousex <= (width - 1) * cwidth)
+                if (mousey >= 0 && mousey <= (height - 1) * cheight)
+                {
+                    if (mouse_state.LeftButton == ButtonState.Pressed)
+                    {
+                        int cellx = cursorx / cwidth, celly = cursory / cheight;
+                        Cell C = System.Activator.CreateInstance(new_cell_type) as Cell;
+                        if (cells[grid[cellx, celly]] is EmptyCell)
+                        {
+                            AddCell(cellx, celly, C);
+                        }
+                    }
+                }
 
             foreach (Button B in buttons)
             {

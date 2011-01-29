@@ -15,11 +15,15 @@ namespace Extinction
     class Button
     {
         public Texture2D tex_up, tex_down, tex_overlay;
-        public bool is_pressed = false;
+        public bool is_pressed = false, is_active = false;
         public int x, y;
+        public string name;
+        static public int bwidth=80, bheight=20;
 
-        public Button(Texture2D up, Texture2D down, Texture2D overlay, int x_in, int y_in)
+        public Button(string name, Texture2D up, Texture2D down, Texture2D overlay, 
+            int x_in, int y_in)
         {
+            this.name = name;
             tex_down = down;
             tex_up = up;
             tex_overlay = overlay;
@@ -32,10 +36,44 @@ namespace Extinction
         public void OnPressed(EventArgs e)
         {
             if (Pressed != null)
-                OnPressed(e);
+                Pressed(this, e);
         }
         public void Update(MouseState M)
         {
+
+            Rectangle pointRect = new Rectangle(M.X, M.Y, 1, 1); 
+            Rectangle buttonRect = 
+                new Rectangle(this.x, this.y, Button.bwidth, Button.bheight);
+            if (buttonRect.Intersects(pointRect))
+            {
+                //mousing over
+                if (M.LeftButton == ButtonState.Pressed)
+                {
+                    if (is_active) is_pressed = false;
+                    else is_pressed = true;
+                }
+                else
+                {
+                    if (is_pressed)
+                    {
+                        OnPressed(new EventArgs());
+                        is_active = true;
+                    }
+                    else
+                    {
+                        is_active = false;
+                    }
+                }
+            }
+            else if (M.LeftButton != ButtonState.Pressed)
+            {
+                
+            }
+        }
+        public void DeSelect()
+        {
+            is_active = false;
+            is_pressed = false;
         }
         public void Draw(SpriteBatch S)
         {
