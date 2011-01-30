@@ -36,10 +36,6 @@ namespace Extinction
             age = 0;
             ++count;
         }
-        ~PlantCell()
-        {
-            --count;
-        }
         public override void Update(GameTime gameTime, int x, int y)
         {
             if (updated)

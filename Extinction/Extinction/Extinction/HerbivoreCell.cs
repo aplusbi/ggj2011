@@ -21,10 +21,6 @@ namespace Extinction
         {
             ++count;
         }
-        ~HerbivoreCell()
-        {
-            --count;
-        }
 
         public override void Birth(int x, int y)
         {

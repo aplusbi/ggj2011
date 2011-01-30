@@ -518,6 +518,11 @@ namespace Extinction
         public static void RemoveCell(int x, int y)
         {
             int id = grid[x, y];
+            Cell c = cells[id];
+            if (c is HerbivoreCell)
+                HerbivoreCell.count--;
+            else if (c is PlantCell)
+                PlantCell.count--;
             cells.Remove(id);
             for (int h = 0; h < height; ++h)
             {

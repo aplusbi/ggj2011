@@ -37,6 +37,10 @@ namespace Extinction
             : base()
         {
             info = i;
+            Reset();
+        }
+        public void Reset()
+        {
             hunger = (info.sated + info.starved) / 2;
             mated = 0;
             age = 0;
@@ -129,21 +133,40 @@ namespace Extinction
             return Seek(x, y, new Predicate<Cell>(IsMate), Reproduce);
         }
 
-        Queue<int[]> vertices = new Queue<int[]>();
-        IDictionary<int, int[]> lookup = new Dictionary<int, int[]>();
+        //static Queue<int[]> vertices = new Queue<int[]>();
+        static Queue vertices = new Queue();
+        static IDictionary<int, bool> lookup = new Dictionary<int, bool>();
+        static int[][] lookupData = new int[ExtGame.width * ExtGame.height][];
+        static bool ldInit = false;
+        static int[,] spots = new int[8, 2];
         public delegate bool SeekHandler(int x, int y);
+        void LookupAdd(int x, int y, int px, int py)
+        {
+            int i = x + y * ExtGame.width;
+            lookup[i] = true;
+            lookupData[i][0] = x;
+            lookupData[i][1] = y;
+            lookupData[i][2] = px;
+            lookupData[i][3] = py;
+        }
         public bool Seek(int x, int y, Predicate<Cell> pred, SeekHandler handler)
         {
-            vertices.Clear();
+            if (!ldInit)
+            {
+                for (int i = 0; i < lookupData.Count(); ++i)
+                    lookupData[i] = new int[4];
+                ldInit = true;
+            }
             lookup.Clear();
+            vertices.Clear();
             int depth = 0;
 
             // vertex plus parent vertex
-            vertices.Enqueue(new int[4]{x, y, x, y});
-            lookup.Add( x + y * ExtGame.width, new int[4] { x, y, x, y });
-            int[,] spots = new int[8, 2];
+            vertices.Enqueue(x, y, x, y);
+            LookupAdd(x, y, x, y);
 
-            while (vertices.Count > 0 && depth++ < 256)
+            //while (vertices.Count() > 0)
+            while (vertices.Count() > 0 && depth++ < 512)
             {
                 int[] v = vertices.Dequeue();
                 int len = Spots(v[0], v[1], spots);
@@ -168,7 +191,7 @@ namespace Extinction
                         while (p[2] != x || p[3] != y)
                         {
                             // get the parent
-                            p = lookup[p[2] + p[3] * ExtGame.width];
+                            p = lookupData[p[2] + p[3] * ExtGame.width];
                         }
 
                         Move(x, y, p[0], p[1]);
@@ -179,8 +202,8 @@ namespace Extinction
                     int s = sx + sy * ExtGame.width;
                     if (!lookup.ContainsKey(s) && c is EmptyCell) 
                     {
-                        vertices.Enqueue(new int[4] { sx, sy, v[0], v[1] });
-                        lookup.Add(s, new int[4] { sx, sy, v[0], v[1] });
+                        vertices.Enqueue(sx, sy, v[0], v[1]);
+                        LookupAdd(sx, sy, v[0], v[1]);
                     }
                 }
             }
