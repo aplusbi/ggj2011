@@ -155,7 +155,7 @@ namespace Extinction
                     Cell c = ExtGame.cells[ExtGame.grid[sx, sy]];
 
                     // if pred, we are done
-                    if (pred(c))
+                    if (pred(c) && (sx != x || sy != y))
                     {
                         // if we are at the root
                         if (v[0] == x && v[1] == y)
