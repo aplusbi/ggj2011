@@ -2,7 +2,7 @@
 	{"cost":20,
 	"textureFile":"red_tile",
 	"width":1,"height":1,
-	"reproRate":70,
+	"reproRate":60,
 	"airRate":10,
 	"food":20,
 	"airCutOff":150,
