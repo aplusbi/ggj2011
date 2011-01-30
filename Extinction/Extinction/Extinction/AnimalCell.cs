@@ -136,13 +136,14 @@ namespace Extinction
         {
             vertices.Clear();
             lookup.Clear();
+            int depth = 0;
 
             // vertex plus parent vertex
             vertices.Enqueue(new int[4]{x, y, x, y});
             lookup.Add( x + y * ExtGame.width, new int[4] { x, y, x, y });
             int[,] spots = new int[8, 2];
 
-            while (vertices.Count > 0)
+            while (vertices.Count > 0 && depth++ < 256)
             {
                 int[] v = vertices.Dequeue();
                 int len = Spots(v[0], v[1], spots);
@@ -183,7 +184,7 @@ namespace Extinction
                     }
                 }
             }
-            return true;
+            return false;
         }
         public bool Eat(int i, int j)
         {
