@@ -8,7 +8,7 @@
 	"airCutOff":150,
 	"sated":100,
 	"starved":50,
-	"lifeExpectancy":200},
+	"lifeExpectancy":150},
 	{"textureFile":"man_tile",
 	"width":1,
 	"height":1,
