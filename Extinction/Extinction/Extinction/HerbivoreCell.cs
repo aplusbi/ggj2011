@@ -15,6 +15,7 @@ namespace Extinction
     public class HerbivoreCell: AnimalCell
     {
         public static int count = 0;
+        public static int seekCount = 0;
         public HerbivoreCell(Info i)
             : base(i)
         {
@@ -33,9 +34,9 @@ namespace Extinction
         {
             return c is PlantCell;
         }
-        public override int FoodCount()
+        public override bool FoodCount()
         {
-            return PlantCell.count;
+            return seekCount++ < PlantCell.count;
         }
         public override bool IsMate(Cell c)
         {

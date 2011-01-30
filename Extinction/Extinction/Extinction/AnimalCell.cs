@@ -37,7 +37,7 @@ namespace Extinction
             : base()
         {
             info = i;
-            hunger = info.sated;
+            hunger = (info.sated + info.starved) / 2;
             mated = 0;
             age = 0;
         }
@@ -117,7 +117,7 @@ namespace Extinction
 
         public bool SeekFood(int x, int y)
         {
-            if (!foodseeking || FoodCount() == 0)
+            if (!foodseeking || !FoodCount())
                 return false;
             return Seek(x, y, new Predicate<Cell>(IsFood), Eat);
         }
@@ -219,6 +219,6 @@ namespace Extinction
         public abstract void Birth(int x, int y);
         public abstract bool IsFood(Cell c);
         public abstract bool IsMate(Cell c);
-        public abstract int FoodCount();
+        public abstract bool FoodCount();
     }
 }

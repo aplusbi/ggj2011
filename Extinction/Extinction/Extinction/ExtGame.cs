@@ -288,6 +288,8 @@ namespace Extinction
                 {
                     c.updated = false;
                 }
+                HerbivoreCell.seekCount = 0;
+                CarnivoreCell.seekCount = 0;
                 if(has_begun && !game_over) score++;
             }
 
