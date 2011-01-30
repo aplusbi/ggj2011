@@ -25,6 +25,8 @@ namespace Extinction
             public int starved { get; set; } // hunger level at which they seek food
             public int lifeExpectancy { get; set; } // max age
             public int airCutoff { get; set; }
+            public string textureFile { get; set; }
+            public int cost { get; set; }
         }
         public Info info;
         protected int hunger;

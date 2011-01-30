@@ -22,6 +22,7 @@ namespace Extinction
         public static int width, height;
         public static int cwidth, cheight;
         int score;
+        int currency;
         bool has_begun = false;
         bool game_over = false;
         int offx, offy;
@@ -49,6 +50,7 @@ namespace Extinction
         List<PlantCell.Info> plantinfos;
         List<AnimalCell.Info> herbivoreinfos;
         List<AnimalCell.Info> carnivoreinfos;
+        public static Dictionary<string, Texture2D> animaltextures = new Dictionary<string,Texture2D>();
         
         public MouseState mouse_state;
         List<Button> buttons;
@@ -101,7 +103,10 @@ namespace Extinction
             empty_tile = Content.Load<Texture2D>("brown_tile");
             green_tile = Content.Load<Texture2D>("green_tile");
             red_tile = Content.Load<Texture2D>("red_tile");
+            animaltextures.Add("red_tile", red_tile);
             orange_tile = Content.Load<Texture2D>("orange_tile");
+            animaltextures.Add("orange_tile", orange_tile);
+            animaltextures.Add("man_tile", Content.Load<Texture2D>("man_tile"));
             cursor_tex = Content.Load<Texture2D>("cursor");
             plants_overlay = Content.Load<Texture2D>("plants");
             carn_overlay = Content.Load<Texture2D>("carnivore");
@@ -188,6 +193,7 @@ namespace Extinction
 
         public void Reset()
         {
+            currency = 2000;
             game_over = false;
             has_begun = false;
             score = 0;
@@ -296,9 +302,9 @@ namespace Extinction
             if (cursorx < 0) cursorx = 0;
             if (cursory < 0) cursory = 0;
 
-            if (mousex >= 0 && mousex <= (width - 1) * cwidth)
+            if (mousex >= 0 && mousex <= (width) * cwidth)
             {
-                if (mousey >= 0 && mousey <= (height - 1) * cheight)
+                if (mousey >= 0 && mousey <= (height) * cheight)
                 {
                     if (mouse_state.LeftButton == ButtonState.Pressed &&
                         new_cell_type != null)
@@ -311,16 +317,19 @@ namespace Extinction
                             {
                                 HerbivoreCell A = new HerbivoreCell(herbivoreinfos[0]);
                                 AddCell(cellx, celly, A);
+                                currency -= A.info.cost;
                             }
                             else if (new_cell_type == typeof(CarnivoreCell))
                             {
                                 CarnivoreCell A = new CarnivoreCell(carnivoreinfos[0]);
                                 AddCell(cellx, celly, A);
+                                currency -= A.info.cost;
                             }
                             else
                             {
                                 PlantCell A = new PlantCell(plantinfos[0]);
                                 AddCell(cellx, celly, A);
+                                currency -= A.info.cost;
                             }
                             if (!has_begun)
                             {
@@ -389,6 +398,8 @@ namespace Extinction
 
             spriteBatch.DrawString(theFont, "Score: " + score.ToString(),
                 new Vector2(130, 20 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "Currency: " + currency.ToString(),
+                new Vector2(130, 40 + (Button.bheight) * 6), Color.White);
 
             if (game_over)
             {

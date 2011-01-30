@@ -42,7 +42,8 @@ namespace Extinction
             if (drawn)
                 return;
 
-            S.Draw(ExtGame.orange_tile, new Vector2(x, y), Color.White);
+            S.Draw(ExtGame.animaltextures[this.info.textureFile], 
+                new Vector2(x, y), Color.White);
         }
     }
 }

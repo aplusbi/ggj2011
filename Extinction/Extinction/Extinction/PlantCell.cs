@@ -22,6 +22,7 @@ namespace Extinction
             public int airRate { get; set; } // how much air is breathed
             public int food { get; set; } // how much energy an animal gets from eating this
             public int airCutoff { get; set; } //how much oxygen before plants start dying
+            public int cost { get; set; }
         }
         int reproduction;
         public Info info;
