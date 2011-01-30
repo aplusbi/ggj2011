@@ -23,6 +23,7 @@ namespace Extinction
         public static int cwidth, cheight;
         int score;
         bool has_begun = false;
+        bool game_over = false;
         int offx, offy;
         int cursorx, cursory;
         static int currID = 1;
@@ -143,14 +144,15 @@ namespace Extinction
 
         void Cells_Pressed(object sender, EventArgs e)
         {
-            if (!has_begun)
+            /*if (!has_begun)
             {
                 has_begun = true;
-            }
+            }*/
         }
 
         void Plants_Pressed(object sender, EventArgs e)
         {
+            if (game_over) return;
             new_cell_type = typeof(PlantCell);
             foreach (Button B in buttons)
                 if (B != sender as Button)
@@ -158,6 +160,7 @@ namespace Extinction
         }
         void Herbivore_Pressed(object sender, EventArgs e)
         {
+            if (game_over) return;
             new_cell_type = typeof(HerbivoreCell);
             foreach (Button B in buttons)
                 if (B != sender as Button)
@@ -165,6 +168,7 @@ namespace Extinction
         }
         void Carnivore_Pressed(object sender, EventArgs e)
         {
+            if (game_over) return;
             new_cell_type = typeof(CarnivoreCell);
             foreach (Button B in buttons)
                 if (B != sender as Button)
@@ -184,6 +188,7 @@ namespace Extinction
 
         public void Reset()
         {
+            game_over = false;
             has_begun = false;
             score = 0;
             oxygen = 2000;
@@ -272,7 +277,7 @@ namespace Extinction
                 {
                     c.updated = false;
                 }
-                if(has_begun) score++;
+                if(has_begun && !game_over) score++;
             }
 
             //update the position of the cursor based on the mouse position
@@ -291,7 +296,8 @@ namespace Extinction
             if (cursorx < 0) cursorx = 0;
             if (cursory < 0) cursory = 0;
 
-            if(mousex >= 0 && mousex <= (width - 1) * cwidth)
+            if (mousex >= 0 && mousex <= (width - 1) * cwidth)
+            {
                 if (mousey >= 0 && mousey <= (height - 1) * cheight)
                 {
                     if (mouse_state.LeftButton == ButtonState.Pressed &&
@@ -303,7 +309,7 @@ namespace Extinction
                         {
                             if (new_cell_type == typeof(HerbivoreCell))
                             {
-                                HerbivoreCell A = new HerbivoreCell(herbivoreinfos[0]);              
+                                HerbivoreCell A = new HerbivoreCell(herbivoreinfos[0]);
                                 AddCell(cellx, celly, A);
                             }
                             else if (new_cell_type == typeof(CarnivoreCell))
@@ -316,9 +322,15 @@ namespace Extinction
                                 PlantCell A = new PlantCell(plantinfos[0]);
                                 AddCell(cellx, celly, A);
                             }
+                            if (!has_begun)
+                            {
+                                has_begun = true;
+                            }
                         }
                     }
                 }
+            }
+            if (cells.Count() == 1 && has_begun) game_over = true;
 
             foreach (Button B in buttons)
             {
@@ -377,6 +389,16 @@ namespace Extinction
 
             spriteBatch.DrawString(theFont, "Score: " + score.ToString(),
                 new Vector2(130, 20 + (Button.bheight) * 6), Color.White);
+
+            if (game_over)
+            {
+                string endstring = "EXTINCTION ACHIEVED!";
+                Vector2 stringsize = theFont.MeasureString(endstring);
+                //stringsize.X += 32;
+                spriteBatch.DrawString(theFont, endstring,
+                    new Vector2(offx + (width*cwidth)/2- stringsize.X/2, offy + (height * cheight) / 2), 
+                    Color.White);
+            }
 
             spriteBatch.End();
 
