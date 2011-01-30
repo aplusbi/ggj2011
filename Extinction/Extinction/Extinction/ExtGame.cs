@@ -17,12 +17,18 @@ namespace Extinction
     /// </summary>
     public class ExtGame : Microsoft.Xna.Framework.Game
     {
+        public struct world_info
+        {
+            public int currency { get; set; }
+            public int moneygainrate { get; set; }
+        }
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         public static int width, height;
         public static int cwidth, cheight;
         int score;
         int currency;
+        int moneygainrate;
         bool has_begun = false;
         bool game_over = false;
         int offx, offy;
@@ -252,11 +258,16 @@ namespace Extinction
                     carnivoreinfos = serializer.Deserialize<List<CarnivoreCell.Info>>(line);
                 }
             }
-            /*for (int ii = 0; ii < num_plants; ii++)
-                AddCell(R.Next(0, width), R.Next(0, height), new PlantCell());
-            for (int ii = 0; ii < num_herb; ii++)
-                AddCell(R.Next(0, width), R.Next(0, height), new HerbivoreCell());*/
-            //Content.RootDirectory
+            using (StreamReader reader =
+               new StreamReader(Content.RootDirectory + "\\world_info.txt"))
+            {
+                line = reader.ReadToEnd();
+                {
+                    List<ExtGame.world_info> world_infos = serializer.Deserialize<List<ExtGame.world_info>>(line);
+                    this.currency = world_infos[0].currency;
+                    this.moneygainrate = world_infos[0].moneygainrate;
+                }
+            }
         }
 
         /// <summary>
@@ -272,6 +283,7 @@ namespace Extinction
 
             elapsed = elapsed + gameTime.ElapsedGameTime;
             TimeSpan span = new TimeSpan(turn_amount*10000);
+            bool isPlants = false, isHerbs = false, isCarn = false;
             if(elapsed >= span)
             {
                 Console.WriteLine("Oxygen: " + oxygen);
@@ -281,13 +293,16 @@ namespace Extinction
                     for (int x = 0; x < width; ++x)
                     {
                         cells[grid[x, y]].Update(gameTime, x, y);
-
                     }
                 }
                 foreach(Cell c in cells.Values)
                 {
+                    if (c is PlantCell) isPlants = true;
+                    if (c is HerbivoreCell) isHerbs = true;
+                    if (c is CarnivoreCell) isCarn = true;
                     c.updated = false;
                 }
+                if (isPlants && isHerbs && isCarn) this.currency += this.moneygainrate;
                 HerbivoreCell.seekCount = 0;
                 CarnivoreCell.seekCount = 0;
                 if(has_begun && !game_over) score++;
@@ -323,20 +338,29 @@ namespace Extinction
                             if (new_cell_type == typeof(HerbivoreCell))
                             {
                                 HerbivoreCell A = new HerbivoreCell(herbivoreinfos[0]);
-                                AddCell(cellx, celly, A);
-                                currency -= A.info.cost;
+                                if (currency >= A.info.cost)
+                                {
+                                    AddCell(cellx, celly, A);
+                                    currency -= A.info.cost;
+                                }
                             }
                             else if (new_cell_type == typeof(CarnivoreCell))
                             {
                                 CarnivoreCell A = new CarnivoreCell(carnivoreinfos[0]);
-                                AddCell(cellx, celly, A);
-                                currency -= A.info.cost;
+                                if (currency >= A.info.cost)
+                                {
+                                    AddCell(cellx, celly, A);
+                                    currency -= A.info.cost;
+                                }
                             }
                             else
                             {
                                 PlantCell A = new PlantCell(plantinfos[0]);
-                                AddCell(cellx, celly, A);
-                                currency -= A.info.cost;
+                                if (currency >= A.info.cost)
+                                {
+                                    AddCell(cellx, celly, A);
+                                    currency -= A.info.cost;
+                                }
                             }
                             if (!has_begun)
                             {

@@ -1,3 +1,5 @@
-Plants[{"cost":1, "lifeExpectancy":300, "width":1,"height":1,"reproRate":10,"airRate":1,"food":5,"airCutOff":3700}]
-Herbivores[{"cost":2, "textureFile":"orange_tile","width":1,"height":1,"reproRate":20,"airRate":2,"food":20,"airCutOff":150,"sated":50,"starved":25,"lifeExpectancy":100}]
-Carnivores[{"cost":2, "textureFile":"red_tile", "width":1,"height":1,"reproRate":50,"airRate":3,"food":20,"airCutOff":150,"sated":300,"starved":100,"lifeExpectancy":200},{"textureFile":"man_tile", "width":1,"height":1,"reproRate":50,"airRate":3,"food":20,"airCutOff":150,"sated":300,"starved":100,"lifeExpectancy":200}]
+[
+	{"currency":500,
+	"moneygainrate":1
+	}
+]
