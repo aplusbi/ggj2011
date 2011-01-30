@@ -30,6 +30,7 @@ namespace Extinction
         protected int hunger;
         public int mated;
         public int age;
+        public bool foodseeking = false;
         public AnimalCell()
             : base()
         {
@@ -61,6 +62,10 @@ namespace Extinction
                     return;
                 }
             }
+            if (hunger < info.starved)
+                foodseeking = true;
+            else if (hunger > info.sated)
+                foodseeking = false;
             if (++age > info.lifeExpectancy)
             {
                 int max = Math.Max(0, info.lifeExpectancy / 4 - (age - info.lifeExpectancy));
@@ -72,17 +77,18 @@ namespace Extinction
             }
             
             ExtGame.oxygen -= info.airRate;
-            if (ExtGame.oxygen < 1)
+            if (ExtGame.oxygen < 0)
             {
-                ExtGame.oxygen = 1;
+                ExtGame.oxygen = 0;
             }
             if (ExtGame.oxygen < info.airCutoff)
             {
-                float deathChance =
+                /*float deathChance =
                     (float)(info.airCutoff) /
                     (float)(ExtGame.oxygen);
                 deathChance *= 100;
-                if (r.Next(100) <= deathChance)
+                if (r.Next(100) <= deathChance)*/
+                if(r.Next(ExtGame.oxygen/(info.airCutoff/100)) == 0)
                 {
                     ExtGame.RemoveCell(x, y);
                     return;
@@ -98,7 +104,7 @@ namespace Extinction
         public override bool DoStuff(int x, int y, int i, int j)
         {
             Cell neighbor = ExtGame.cells[ExtGame.grid[i, j]];
-            if (neighbor is AnimalCell && mated > info.reproRate && ExtGame.oxygen > 100)
+            if (neighbor is AnimalCell && mated > info.reproRate && ExtGame.oxygen > info.airCutoff)
             {
                 mated = -1;
                 return false;
@@ -129,14 +135,14 @@ namespace Extinction
 
         public bool SeekFood(int x, int y)
         {
-            if (hunger > info.starved)
+            if (!foodseeking || FoodCount() <= 0)
                 return false;
             return Seek(x, y, new Predicate<Cell>(IsFood), Eat);
         }
 
         public bool SeekMate(int x, int y)
         {
-            if ((age < 15 || age > 45) && mated > info.reproRate && ExtGame.oxygen > 50)
+            if ((age < 15 || age > 45) || mated < info.reproRate || ExtGame.oxygen < 50)
                 return false;
             return Seek(x, y, new Predicate<Cell>(IsMate), Reproduce);
         }
@@ -211,5 +217,6 @@ namespace Extinction
         public abstract bool Reproduce(int i, int j);
         public abstract bool IsFood(Cell c);
         public abstract bool IsMate(Cell c);
+        public abstract int FoodCount();
     }
 }

@@ -29,6 +29,10 @@ namespace Extinction
         {
             return c is HerbivoreCell;
         }
+        public override int FoodCount()
+        {
+            return HerbivoreCell.count;
+        }
         public override bool IsMate(Cell c)
         {
             return c is CarnivoreCell;

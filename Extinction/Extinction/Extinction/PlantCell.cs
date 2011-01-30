@@ -25,14 +25,21 @@ namespace Extinction
         }
         int reproduction;
         public Info info;
+        public static int count = 0;
         public PlantCell()
         {
             reproduction = 0;
+            ++count;
         }
         public PlantCell(Info i)
         {
             info = i;
             reproduction = 0;
+            ++count;
+        }
+        ~PlantCell()
+        {
+            --count;
         }
         public override void Update(GameTime gameTime, int x, int y)
         {
@@ -46,11 +53,13 @@ namespace Extinction
             }
             if (ExtGame.oxygen > info.airCutoff)
             {
-                float deathChance =
+                /*float deathChance =
                     (int)(ExtGame.oxygen - info.airCutoff) /
                     (float)(ExtGame.maxOxygen - info.airCutoff);
                 deathChance *= 100;
-                if (r.Next(100) <= deathChance)
+                if (r.Next(100) <= deathChance)*/
+                int cutOff = (ExtGame.maxOxygen - info.airCutoff) / 100;
+                if(r.Next((ExtGame.maxOxygen - ExtGame.oxygen)/cutOff) == 0)
                 {
                     ExtGame.RemoveCell(x, y);
                     return;
@@ -69,7 +78,7 @@ namespace Extinction
         }
         public override bool DoStuff(int x, int y, int i, int j)
         {
-            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < ExtGame.maxOxygen-100 && reproduction > info.reproRate)
+            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < info.airCutoff && reproduction > info.reproRate)
             {
                 reproduction = 0;
                 ExtGame.AddCell(i, j, new PlantCell(info));

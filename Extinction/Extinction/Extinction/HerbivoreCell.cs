@@ -14,13 +14,20 @@ namespace Extinction
 {
     public class HerbivoreCell: AnimalCell
     {
+        public static int count = 0;
         public HerbivoreCell()
             : base()
         {
+            ++count;
         }
         public HerbivoreCell(Info i)
             : base(i)
         {
+            ++count;
+        }
+        ~HerbivoreCell()
+        {
+            --count;
         }
 
         public override bool Reproduce(int i, int j)
@@ -31,6 +38,10 @@ namespace Extinction
         public override bool IsFood(Cell c)
         {
             return c is PlantCell;
+        }
+        public override int FoodCount()
+        {
+            return PlantCell.count;
         }
         public override bool IsMate(Cell c)
         {
