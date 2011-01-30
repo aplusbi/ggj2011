@@ -14,16 +14,12 @@ namespace Extinction
 {
     public class CarnivoreCell: AnimalCell
     {
-        public CarnivoreCell():base()
-        {
-        }
         public CarnivoreCell(Info i): base(i)
         {
         }
-        public override bool Reproduce(int i, int j)
+        public override void Birth(int x, int y)
         {
-            ExtGame.AddCell(i, j, new CarnivoreCell(info));
-            return true;
+            ExtGame.AddCell(x, y, new CarnivoreCell(info));
         }
         public override bool IsFood(Cell c)
         {

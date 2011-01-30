@@ -22,20 +22,18 @@ namespace Extinction
             public int airRate { get; set; } // how much air is breathed
             public int food { get; set; } // how much energy an animal gets from eating this
             public int airCutoff { get; set; } //how much oxygen before plants start dying
+            public int lifeExpectancy { get; set; }
             public int cost { get; set; }
         }
         int reproduction;
+        int age;
         public Info info;
         public static int count = 0;
-        public PlantCell()
-        {
-            reproduction = 0;
-            ++count;
-        }
         public PlantCell(Info i)
         {
             info = i;
             reproduction = 0;
+            age = 0;
             ++count;
         }
         ~PlantCell()
@@ -47,7 +45,7 @@ namespace Extinction
             if (updated)
                 return;
 
-            ExtGame.oxygen += info.airRate;
+            //ExtGame.oxygen += info.airRate;
             if (ExtGame.oxygen > ExtGame.maxOxygen)
             {
                 ExtGame.oxygen = ExtGame.maxOxygen;
@@ -67,6 +65,16 @@ namespace Extinction
                 }
             }
 
+            if (++age > info.lifeExpectancy)
+            {
+                int max = Math.Max(0, info.lifeExpectancy / 4 - (age - info.lifeExpectancy));
+                if (r.Next(max) == 0)
+                {
+                    ExtGame.RemoveCell(x, y);
+                    return;
+                }
+            }
+
             ++reproduction;
             base.Update(gameTime, x, y);
         }
@@ -79,7 +87,7 @@ namespace Extinction
         }
         public override bool DoStuff(int x, int y, int i, int j)
         {
-            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < info.airCutoff && reproduction > info.reproRate)
+            if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < info.airCutoff && reproduction > info.reproRate && age < info.lifeExpectancy)
             {
                 reproduction = 0;
                 ExtGame.AddCell(i, j, new PlantCell(info));

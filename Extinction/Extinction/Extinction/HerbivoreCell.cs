@@ -15,11 +15,6 @@ namespace Extinction
     public class HerbivoreCell: AnimalCell
     {
         public static int count = 0;
-        public HerbivoreCell()
-            : base()
-        {
-            ++count;
-        }
         public HerbivoreCell(Info i)
             : base(i)
         {
@@ -30,10 +25,9 @@ namespace Extinction
             --count;
         }
 
-        public override bool Reproduce(int i, int j)
+        public override void Birth(int x, int y)
         {
-            ExtGame.AddCell(i, j, new HerbivoreCell(info));
-            return true;
+            ExtGame.AddCell(x, y, new HerbivoreCell(info));
         }
         public override bool IsFood(Cell c)
         {

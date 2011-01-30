@@ -33,13 +33,6 @@ namespace Extinction
         public int mated;
         public int age;
         public bool foodseeking = false;
-        public AnimalCell()
-            : base()
-        {
-            hunger = info.sated;
-            mated = 0;
-            age = 0;
-        }
         public AnimalCell(Info i)
             : base()
         {
@@ -78,7 +71,7 @@ namespace Extinction
                 }
             }
             
-            ExtGame.oxygen -= info.airRate;
+            //ExtGame.oxygen -= info.airRate;
             if (ExtGame.oxygen < 0)
             {
                 ExtGame.oxygen = 0;
@@ -108,19 +101,11 @@ namespace Extinction
             Cell neighbor = ExtGame.cells[ExtGame.grid[i, j]];
             if (neighbor is AnimalCell && mated > info.reproRate && ExtGame.oxygen > info.airCutoff)
             {
-                mated = -1;
-                return false;
+                return Reproduce(i, j);
             }
             if (ExtGame.grid[i, j] == 0)
             {
-                if (mated == -1)
-                {
-                    Reproduce(i, j);
-                }
-                else
-                {
-                    Move(x, y, i, j);
-                }
+                Move(x, y, i, j);
                 return true;
             }
             return Eat(i, j);
@@ -137,14 +122,14 @@ namespace Extinction
 
         public bool SeekFood(int x, int y)
         {
-            if (!foodseeking || FoodCount() <= 0)
+            if (!foodseeking || FoodCount() == 0)
                 return false;
             return Seek(x, y, new Predicate<Cell>(IsFood), Eat);
         }
 
         public bool SeekMate(int x, int y)
         {
-            if ((age < 15 || age > 45) || mated < info.reproRate || ExtGame.oxygen < 50)
+            if (age < 0.1*info.lifeExpectancy || mated < info.reproRate || ExtGame.oxygen < info.airCutoff || foodseeking)
                 return false;
             return Seek(x, y, new Predicate<Cell>(IsMate), Reproduce);
         }
@@ -216,7 +201,27 @@ namespace Extinction
             }
             return false;
         }
-        public abstract bool Reproduce(int i, int j);
+        public bool Reproduce(int i, int j)
+        {
+            if (hunger < info.starved || ExtGame.oxygen < info.airCutoff || age < 0.1*info.lifeExpectancy)
+                return false;
+
+            int[,] spots = new int[8, 2];
+            int len = Spots(i, j, spots);
+            for (int k = 0; k < len; ++k)
+            {
+                int x = spots[k, 0];
+                int y = spots[k, 1];
+                if (ExtGame.grid[x, y] == 0)
+                {
+                    Birth(x, y);
+                    mated = 0;
+                    return true;
+                }
+            }
+            return false;
+        }
+        public abstract void Birth(int x, int y);
         public abstract bool IsFood(Cell c);
         public abstract bool IsMate(Cell c);
         public abstract int FoodCount();
