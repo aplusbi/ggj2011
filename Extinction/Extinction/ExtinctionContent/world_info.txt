@@ -1,5 +1,5 @@
 [
-	{"currency":50000,
+	{"currency":1000,
 	"moneygainrate":1
 	}
 ]

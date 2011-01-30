@@ -166,7 +166,7 @@ namespace Extinction
             LookupAdd(x, y, x, y);
 
             //while (vertices.Count() > 0)
-            while (vertices.Count() > 0 && depth++ < 512)
+            while (vertices.Count() > 0 && depth++ < 256)
             {
                 int[] v = vertices.Dequeue();
                 int len = Spots(v[0], v[1], spots);

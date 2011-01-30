@@ -2,11 +2,11 @@
 	{"cost":20,
 	"textureFile":"red_tile",
 	"width":1,"height":1,
-	"reproRate":60,
+	"reproRate":45,
 	"airRate":10,
 	"food":20,
 	"airCutOff":150,
 	"sated":75,
 	"starved":30,
-	"lifeExpectancy":150}
+	"lifeExpectancy":120}
 ]

@@ -1,4 +1,14 @@
 [
-	{"cost":20,"textureFile":"orange_tile","width":1,"height":1,"reproRate":10,
-	"airRate":10,"food":20,"airCutOff":150,"sated":40,"starved":20,"lifeExpectancy":100}
+	{
+	"cost":20,
+	"textureFile":"orange_tile",
+	"width":1,"height":1,
+	"reproRate":12,
+	"airRate":10,
+	"food":25,
+	"airCutOff":150,
+	"sated":40,
+	"starved":20,
+	"lifeExpectancy":100
+	}
 ]
