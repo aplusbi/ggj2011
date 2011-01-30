@@ -24,19 +24,23 @@ namespace Extinction
         }
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Song morning;
         public static int width, height;
         public static int cwidth, cheight;
         int score;
         int currency;
         int moneygainrate;
+        bool is_in_title = true;
         bool has_begun = false;
         bool game_over = false;
+        int credits_timer = 180;
         int offx, offy;
         int cursorx, cursory;
         static int currID = 1;
         public static int[,] grid;
         public static Dictionary<int, Cell> cells;
         public static int oxygen, maxOxygen;
+        Texture2D title_screen, credits;
         Texture2D background;
         TimeSpan elapsed;
         public SpriteFont theFont;
@@ -123,6 +127,9 @@ namespace Extinction
             bar_seperator = Content.Load<Texture2D>("bar_seperator");
             fastforward_overlay = Content.Load<Texture2D>("fastforward");
             reverse_overlay = Content.Load<Texture2D>("reverse");
+            title_screen = Content.Load<Texture2D>("title");
+            credits = Content.Load<Texture2D>("credits");
+
            
             // TODO: use this.Content to load your game content here
 
@@ -151,6 +158,10 @@ namespace Extinction
               reverse_overlay, 130, 10 + (Button.bheight) * 5);
             B.Pressed += new Button.ButtonPressedHandler(Rev_Pressed);
             buttons.Add(B);
+
+            morning = Content.Load<Song>("morning");
+            MediaPlayer.Play(morning);
+            MediaPlayer.IsRepeating = true;
         }
 
         void Cells_Pressed(object sender, EventArgs e)
@@ -200,6 +211,8 @@ namespace Extinction
         public void Reset()
         {
             currency = 2000;
+            credits_timer = 180;
+            is_in_title = true;
             game_over = false;
             has_begun = false;
             score = 0;
@@ -370,17 +383,33 @@ namespace Extinction
                     }
                 }
             }
-            if (cells.Count() == 1 && has_begun) game_over = true;
+            if (cells.Count() == 1 && has_begun)
+            {
+                MediaPlayer.Stop();
+                game_over = true;
+            }
+            if (game_over == true) credits_timer--;
 
             foreach (Button B in buttons)
             {
                 B.Update(mouse_state);
             }
 
+            Keys [] pressedkeys = Keyboard.GetState().GetPressedKeys();
+            if (pressedkeys.Count() > 0)
+            {
+                is_in_title = false;
+            }
+            if (mouse_state.LeftButton == ButtonState.Pressed ||
+                mouse_state.RightButton == ButtonState.Pressed)
+                is_in_title = false;
+
+
             //check for reset
             if (Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 this.Reset();
+                MediaPlayer.Play(morning);
             }
             base.Update(gameTime);
         }
@@ -432,14 +461,37 @@ namespace Extinction
             spriteBatch.DrawString(theFont, "Currency: " + currency.ToString(),
                 new Vector2(130, 40 + (Button.bheight) * 6), Color.White);
 
+            spriteBatch.DrawString(theFont, "HOW TO PLAY",
+                new Vector2(30, 100 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "* Place 3 types of Creatures",
+                new Vector2(30, 120 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "* Carnivores eat Herbivores",
+                new Vector2(30, 140 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "* Herbivores eat Plants",
+                new Vector2(30, 160 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "* Gain currency with all 3",
+                new Vector2(30, 180 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "* Survive!",
+                new Vector2(30, 200 + (Button.bheight) * 6), Color.White);
+
+
             if (game_over)
             {
-                string endstring = "EXTINCTION ACHIEVED!";
+                string endstring = "EXTINCTION ACHIEVED! PRESS R TO RESTART";
                 Vector2 stringsize = theFont.MeasureString(endstring);
                 //stringsize.X += 32;
                 spriteBatch.DrawString(theFont, endstring,
                     new Vector2(offx + (width*cwidth)/2- stringsize.X/2, offy + (height * cheight) / 2), 
                     Color.White);
+            }
+
+            if (is_in_title)
+            {
+                spriteBatch.Draw(title_screen, new Vector2(0, 0), Color.White);
+            }
+            if (game_over && credits_timer <= 0)
+            {
+                spriteBatch.Draw(credits, new Vector2(0, 0), Color.White);
             }
 
             spriteBatch.End();
