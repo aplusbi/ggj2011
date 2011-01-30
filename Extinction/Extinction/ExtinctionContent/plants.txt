@@ -1,3 +1,3 @@
 [
-	{"cost":10, "width":1,"height":1,"reproRate":7,"airRate":1,"food":5,"airCutOff":39000,"lifeExpectancy":300}
+	{"cost":10, "width":1,"height":1,"reproRate":7,"airRate":1,"food":7,"airCutOff":39000,"lifeExpectancy":300}
 ]

@@ -465,14 +465,16 @@ namespace Extinction
                 new Vector2(30, 100 + (Button.bheight) * 6), Color.White);
             spriteBatch.DrawString(theFont, "* Place 3 types of Creatures",
                 new Vector2(30, 120 + (Button.bheight) * 6), Color.White);
-            spriteBatch.DrawString(theFont, "* Carnivores eat Herbivores",
+            spriteBatch.DrawString(theFont, "* Creatures cost Currency",
                 new Vector2(30, 140 + (Button.bheight) * 6), Color.White);
-            spriteBatch.DrawString(theFont, "* Herbivores eat Plants",
+            spriteBatch.DrawString(theFont, "* Carnivores eat Herbivores",
                 new Vector2(30, 160 + (Button.bheight) * 6), Color.White);
-            spriteBatch.DrawString(theFont, "* Gain currency with all 3",
+            spriteBatch.DrawString(theFont, "* Herbivores eat Plants",
                 new Vector2(30, 180 + (Button.bheight) * 6), Color.White);
-            spriteBatch.DrawString(theFont, "* Survive!",
+            spriteBatch.DrawString(theFont, "* Biodiversity makes Currency",
                 new Vector2(30, 200 + (Button.bheight) * 6), Color.White);
+            spriteBatch.DrawString(theFont, "* Survive!",
+                new Vector2(30, 220 + (Button.bheight) * 6), Color.White);
 
 
             if (game_over)
