@@ -1,0 +1,4 @@
+[
+	{"cost":2,"textureFile":"orange_tile","width":1,"height":1,"reproRate":20,
+	"airRate":2,"food":20,"airCutOff":150,"sated":50,"starved":25,"lifeExpectancy":100}
+]

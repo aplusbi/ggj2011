@@ -227,24 +227,29 @@ namespace Extinction
             //int num_plants = 0;
             //int num_herb = 0;
             string line = "";
+            System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             using (StreamReader reader =
-                new StreamReader(Content.RootDirectory + "\\world_info.txt"))
+                new StreamReader(Content.RootDirectory + "\\plants.txt"))
             {
-                System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-                while ((line = reader.ReadLine()) != null)
+                line = reader.ReadToEnd();
                 {
-                    if (line.StartsWith("Plants"))
-                    {
-                        plantinfos = serializer.Deserialize<List<PlantCell.Info>>(line.Substring(6));
-                    }
-                    else if (line.StartsWith("Herbivores"))
-                    {
-                        herbivoreinfos = serializer.Deserialize<List<AnimalCell.Info>>(line.Substring(10));
-                    }
-                    else if(line.StartsWith("Carnivores"))
-                    {
-                        carnivoreinfos = serializer.Deserialize<List<AnimalCell.Info>>(line.Substring(10));
-                    }
+                    plantinfos = serializer.Deserialize<List<PlantCell.Info>>(line);
+                }
+            }
+            using (StreamReader reader =
+                new StreamReader(Content.RootDirectory + "\\herbivores.txt"))
+            {
+                line = reader.ReadToEnd();
+                {
+                    herbivoreinfos = serializer.Deserialize<List<HerbivoreCell.Info>>(line);
+                }
+            }
+            using (StreamReader reader =
+                new StreamReader(Content.RootDirectory + "\\carnivores.txt"))
+            {
+                line = reader.ReadToEnd();
+                {
+                    carnivoreinfos = serializer.Deserialize<List<CarnivoreCell.Info>>(line);
                 }
             }
             /*for (int ii = 0; ii < num_plants; ii++)

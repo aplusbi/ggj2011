@@ -1,0 +1,22 @@
+[
+	{"cost":2,
+	"textureFile":"red_tile",
+	"width":1,"height":1,
+	"reproRate":50,
+	"airRate":3,
+	"food":20,
+	"airCutOff":150,
+	"sated":100,
+	"starved":50,
+	"lifeExpectancy":200},
+	{"textureFile":"man_tile",
+	"width":1,
+	"height":1,
+	"reproRate":50,
+	"airRate":3,
+	"food":20,
+	"airCutOff":150,
+	"sated":100,
+	"starved":50,
+	"lifeExpectancy":200}
+]
