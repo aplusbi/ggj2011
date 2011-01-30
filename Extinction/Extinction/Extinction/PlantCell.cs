@@ -45,7 +45,7 @@ namespace Extinction
             if (updated)
                 return;
 
-            //ExtGame.oxygen += info.airRate;
+            ExtGame.oxygen += info.airRate;
             if (ExtGame.oxygen > ExtGame.maxOxygen)
             {
                 ExtGame.oxygen = ExtGame.maxOxygen;
@@ -55,8 +55,8 @@ namespace Extinction
                 /*float deathChance =
                     (int)(ExtGame.oxygen - info.airCutoff) /
                     (float)(ExtGame.maxOxygen - info.airCutoff);
-                deathChance *= 100;
-                if (r.Next(100) <= deathChance)*/
+                deathChance *= 100;*/
+                //if (r.Next(100) <= deathChance)
                 int cutOff = (ExtGame.maxOxygen - info.airCutoff) / 100;
                 if(r.Next((ExtGame.maxOxygen - ExtGame.oxygen)/cutOff) == 0)
                 {

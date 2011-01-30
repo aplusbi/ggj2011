@@ -71,23 +71,18 @@ namespace Extinction
                 }
             }
             
-            //ExtGame.oxygen -= info.airRate;
+            ExtGame.oxygen -= info.airRate;
             if (ExtGame.oxygen < 0)
             {
                 ExtGame.oxygen = 0;
             }
             if (ExtGame.oxygen < info.airCutoff)
             {
-                /*float deathChance =
-                    (float)(info.airCutoff) /
-                    (float)(ExtGame.oxygen);
-                deathChance *= 100;
-                if (r.Next(100) <= deathChance)*/
-                if(r.Next(ExtGame.oxygen/(info.airCutoff/100)) == 0)
+                /*if(r.Next(ExtGame.oxygen/(info.airCutoff/100)) == 0)
                 {
                     ExtGame.RemoveCell(x, y);
                     return;
-                }
+                }*/
             }
             if (SeekFood(x, y))
                 updated = true;

@@ -78,8 +78,8 @@ namespace Extinction
             cheight = 16;
             offx = 300;
             offy = 5;
-            oxygen = 2000;
-            maxOxygen = 4000;
+            
+            maxOxygen = 40000;
             grid = new int[width, height];
             this.Reset();
             base.Initialize();
@@ -197,7 +197,7 @@ namespace Extinction
             game_over = false;
             has_begun = false;
             score = 0;
-            oxygen = 2000;
+            oxygen = maxOxygen/2;
             cells.Clear();
             for (int h = 0; h < height; ++h)
             {
