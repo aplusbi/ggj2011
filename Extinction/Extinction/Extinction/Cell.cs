@@ -17,17 +17,13 @@ namespace Extinction
         protected int id = -1;
         public bool updated;
         public bool drawn;
-        static protected Random r = new Random();
+        static protected Random r;
 
         public Cell()
         {
             updated = false;
             drawn = false;
-        }
-        public virtual void Reset()
-        {
-            updated = false;
-            drawn = false;
+            r = new Random();
         }
 
         public void Shuffle(int[,] array, int length)

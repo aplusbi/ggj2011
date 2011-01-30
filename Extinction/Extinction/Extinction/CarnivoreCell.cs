@@ -20,7 +20,7 @@ namespace Extinction
         }
         public override void Birth(int x, int y)
         {
-            ExtGame.AddCell(x, y, typeof(CarnivoreCell));
+            ExtGame.AddCell(x, y, new CarnivoreCell(info));
         }
         public override bool IsFood(Cell c)
         {

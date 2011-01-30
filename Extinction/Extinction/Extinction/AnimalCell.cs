@@ -39,12 +39,11 @@ namespace Extinction
             info = i;
             Reset();
         }
-        public override void Reset()
+        public void Reset()
         {
             hunger = (info.sated + info.starved) / 2;
             mated = 0;
             age = 0;
-            base.Reset();
         }
 
         public override void Update(GameTime gameTime, int x, int y)
@@ -167,7 +166,7 @@ namespace Extinction
             LookupAdd(x, y, x, y);
 
             //while (vertices.Count() > 0)
-            while (vertices.Count() > 0 && depth++ < 256)
+            while (vertices.Count() > 0 && depth++ < 512)
             {
                 int[] v = vertices.Dequeue();
                 int len = Spots(v[0], v[1], spots);

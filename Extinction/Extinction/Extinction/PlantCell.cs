@@ -31,16 +31,10 @@ namespace Extinction
         public static int count = 0;
         public PlantCell(Info i)
         {
-            reproduction = 0;
-            age = 0;
             info = i;
-        }
-        public override void Reset()
-        {
             reproduction = 0;
             age = 0;
             ++count;
-            base.Reset();
         }
         public override void Update(GameTime gameTime, int x, int y)
         {
@@ -92,7 +86,7 @@ namespace Extinction
             if (ExtGame.grid[i, j] == 0 && ExtGame.oxygen < info.airCutoff && reproduction > info.reproRate && age < info.lifeExpectancy)
             {
                 reproduction = 0;
-                ExtGame.AddCell(i, j, typeof(PlantCell));
+                ExtGame.AddCell(i, j, new PlantCell(info));
                 return true;
             }
             return false;

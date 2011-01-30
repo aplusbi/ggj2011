@@ -19,16 +19,12 @@ namespace Extinction
         public HerbivoreCell(Info i)
             : base(i)
         {
-        }
-        public override void Reset()
-        {
             ++count;
-            base.Reset();
         }
 
         public override void Birth(int x, int y)
         {
-            ExtGame.AddCell(x, y, typeof(HerbivoreCell));
+            ExtGame.AddCell(x, y, new HerbivoreCell(info));
         }
         public override bool IsFood(Cell c)
         {

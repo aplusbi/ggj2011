@@ -1,7 +1,5 @@
-{
-"currency":50000,
-"moneygainrate":1,
-"plantcost":10,
-"herbcost":20,
-"carncost":20
-}
+[
+	{"currency":50000,
+	"moneygainrate":1
+	}
+]

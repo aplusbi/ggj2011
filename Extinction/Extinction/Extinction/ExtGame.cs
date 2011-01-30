@@ -21,11 +21,7 @@ namespace Extinction
         {
             public int currency { get; set; }
             public int moneygainrate { get; set; }
-            public int plantcost { get; set; }
-            public int herbcost { get; set; }
-            public int carncost { get; set; }
         }
-        static world_info info;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Song morning;
@@ -43,9 +39,6 @@ namespace Extinction
         static int currID = 1;
         public static int[,] grid;
         public static Dictionary<int, Cell> cells;
-        static CellStack qPlants;
-        static CellStack qHerbs;
-        static CellStack qCarns;
         public static int oxygen, maxOxygen;
         Texture2D title_screen, credits;
         Texture2D background;
@@ -99,18 +92,6 @@ namespace Extinction
             maxOxygen = 40000;
             grid = new int[width, height];
             this.Reset();
-
-            // load all the cells
-            int size = ExtGame.width * ExtGame.height;
-            qPlants = new CellStack();
-            qHerbs = new CellStack();
-            qCarns = new CellStack();
-            for (int i = 0; i < size; ++i)
-            {
-                qPlants.Push(new PlantCell(plantinfos[0]));
-                qHerbs.Push(new HerbivoreCell(herbivoreinfos[0]));
-                qCarns.Push(new CarnivoreCell(carnivoreinfos[0]));
-            }
             base.Initialize();
             IsMouseVisible = true;
             graphics.PreferredBackBufferHeight = 700;
@@ -236,23 +217,6 @@ namespace Extinction
             has_begun = false;
             score = 0;
             oxygen = maxOxygen/2;
-            foreach (KeyValuePair<int, Cell> ic in cells)
-            {
-                if (ic.Value is PlantCell)
-                {
-                    qPlants.Push();
-                    --PlantCell.count;
-                }
-                else if (ic.Value is HerbivoreCell)
-                {
-                    qHerbs.Push();
-                    --HerbivoreCell.count;
-                }
-                else if (ic.Value is CarnivoreCell)
-                {
-                    qCarns.Push();
-                }
-            }
             cells.Clear();
             for (int h = 0; h < height; ++h)
             {
@@ -312,9 +276,9 @@ namespace Extinction
             {
                 line = reader.ReadToEnd();
                 {
-                    info = serializer.Deserialize<ExtGame.world_info>(line);
-                    this.currency = info.currency;
-                    this.moneygainrate = info.moneygainrate;
+                    List<ExtGame.world_info> world_infos = serializer.Deserialize<List<ExtGame.world_info>>(line);
+                    this.currency = world_infos[0].currency;
+                    this.moneygainrate = world_infos[0].moneygainrate;
                 }
             }
         }
@@ -386,26 +350,29 @@ namespace Extinction
                         {
                             if (new_cell_type == typeof(HerbivoreCell))
                             {
-                                if (currency >= info.herbcost)
+                                HerbivoreCell A = new HerbivoreCell(herbivoreinfos[0]);
+                                if (currency >= A.info.cost)
                                 {
-                                    AddCell(cellx, celly, new_cell_type);
-                                    currency -= info.herbcost;
+                                    AddCell(cellx, celly, A);
+                                    currency -= A.info.cost;
                                 }
                             }
                             else if (new_cell_type == typeof(CarnivoreCell))
                             {
-                                if (currency >= info.carncost)
+                                CarnivoreCell A = new CarnivoreCell(carnivoreinfos[0]);
+                                if (currency >= A.info.cost)
                                 {
-                                    AddCell(cellx, celly, new_cell_type);
-                                    currency -= info.carncost;
+                                    AddCell(cellx, celly, A);
+                                    currency -= A.info.cost;
                                 }
                             }
                             else
                             {
-                                if (currency >= info.plantcost)
+                                PlantCell A = new PlantCell(plantinfos[0]);
+                                if (currency >= A.info.cost)
                                 {
-                                    AddCell(cellx, celly, new_cell_type);
-                                    currency -= info.plantcost;
+                                    AddCell(cellx, celly, A);
+                                    currency -= A.info.cost;
                                 }
                             }
                             if (!has_begun)
@@ -537,25 +504,10 @@ namespace Extinction
             return currID++;
         }
 
-        public static bool AddCell(int x, int y, Type t)
+        public static bool AddCell(int x, int y, Cell c)
         {
             if (grid[x, y] != 0)
                 return false;
-
-            Cell c;
-            if (t == typeof(PlantCell))
-            {
-                c = qPlants.Pop();
-            }
-            else if (t == typeof(HerbivoreCell))
-            {
-                c = qHerbs.Pop();
-            }
-            else
-            {
-                c = qCarns.Pop();
-            }
-            c.Reset();
 
             int id = GetID();
             cells.Add(id, c);
@@ -568,18 +520,9 @@ namespace Extinction
             int id = grid[x, y];
             Cell c = cells[id];
             if (c is HerbivoreCell)
-            {
                 HerbivoreCell.count--;
-                qHerbs.Push();
-            }
             else if (c is PlantCell)
-            {
                 PlantCell.count--;
-                qPlants.Push();
-            }
-            else
-                qCarns.Push();
-
             cells.Remove(id);
             for (int h = 0; h < height; ++h)
             {
